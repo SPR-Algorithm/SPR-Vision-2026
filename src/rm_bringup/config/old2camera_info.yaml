@@ -1,0 +1,57 @@
+#全向轮
+
+# image_width: 1280
+# image_height: 1024
+# camera_name: narrow_stereo
+# camera_matrix:
+#   rows: 3
+#   cols: 3
+#   data: [2041.95241,    0.     ,  668.03818,
+#             0.     , 2048.79249,  562.42633,
+#             0.     ,    0.     ,    1.     ]
+# distortion_model: plumb_bob
+# distortion_coefficients:
+#   rows: 1
+#   cols: 5
+#   data: [-0.075042, 0.294539, 0.002052, 0.004296, 0.000000]
+# rectification_matrix:
+#   rows: 3
+#   cols: 3
+#   data: [1., 0., 0.,
+#          0., 1., 0.,
+#          0., 0., 1.]
+# projection_matrix:
+#   rows: 3
+#   cols: 4
+#   data: [2032.07385,    0.     ,  670.47466,    0.     ,
+#             0.     , 2042.17957,  562.93768,    0.     ,
+#             0.     ,    0.     ,    1.     ,    0.     ]
+
+
+#舵轮
+image_width: 1280
+image_height: 1024
+camera_name: narrow_stereo
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [1572.88211,    0.     ,  593.60778,
+            0.     , 1577.08106,  537.61906,
+            0.     ,    0.     ,    1.     ]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [-0.071926, 0.238979, -0.003171, -0.001378, 0.000000]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1., 0., 0.,
+         0., 1., 0.,
+         0., 0., 1.]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [1572.99023,    0.     ,  592.78148,    0.     ,
+            0.     , 1573.77161,  534.27836,    0.     ,
+            0.     ,    0.     ,    1.     ,    0.     ]
