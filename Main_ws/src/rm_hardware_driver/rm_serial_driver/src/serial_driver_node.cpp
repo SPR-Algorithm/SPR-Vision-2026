@@ -116,7 +116,7 @@ void SerialDriverNode::listenLoop() {
       //设置颜色
       if (!initial_set_param_ || receive_data.mode != previous_receive_color_) {
         //std::cout<<"set color"<<std::endl;
-        setParam(rclcpp::Parameter("detect_color", receive_data.mode));
+        // setParam(rclcpp::Parameter("detect_color", receive_data.mode));
         previous_receive_color_ = receive_data.mode;
       }
 
@@ -187,18 +187,18 @@ void SerialDriverNode::setMode(SetModeClient &client, const uint8_t mode) {
 
   std::string service_name = client.ptr->get_service_name();
   // Wait for service
-  // while (!client.ptr->wait_for_service(1s)) {
-  //   if (!rclcpp::ok()) {
-  //     FYT_ERROR(
-  //       "serial_driver", "Interrupted while waiting for the service {}. Exiting.", service_name);
-  //     return;
-  //   }
-  //   FYT_INFO("serial_driver", "Service {} not available, waiting again...", service_name);
-  // }
-  // if (!client.ptr->service_is_ready()) {
-  //   FYT_WARN("serial_driver", "Service: {} is not available!", service_name);
-  //   return;
-  // }
+  while (!client.ptr->wait_for_service(1s)) {
+    if (!rclcpp::ok()) {
+      FYT_ERROR(
+        "serial_driver", "Interrupted while waiting for the service {}. Exiting.", service_name);
+      return;
+    }
+    FYT_INFO("serial_driver", "Service {} not available, waiting again...", service_name);
+  }
+  if (!client.ptr->service_is_ready()) {
+    FYT_WARN("serial_driver", "Service: {} is not available!", service_name);
+    return;
+  }
   // Send request
   auto req = std::make_shared<rm_interfaces::srv::SetMode::Request>();
   req->mode = mode;

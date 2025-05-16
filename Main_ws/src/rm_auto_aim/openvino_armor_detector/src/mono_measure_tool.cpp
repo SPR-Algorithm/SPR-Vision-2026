@@ -3,7 +3,7 @@
 #include <openvino_armor_detector/mono_measure_tool.hpp>
 #include <openvino_armor_detector/openvino_detector.hpp>
 
-namespace rm_auto_aim
+namespace fyt::auto_aim
 {
 
 std::vector<cv::Point3f> MonoMeasureTool::small_armor_3d_points = {{-0.066, 0.027, 0},//顺序为左上，左下，右下，右上，单位为m

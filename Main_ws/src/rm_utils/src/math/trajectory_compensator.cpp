@@ -86,7 +86,7 @@ double ResistanceCompensator::calculateTrajectory(const double x,
 double ResistanceCompensator::getFlyingTime(const Eigen::Vector3d &target_position) const noexcept {
   double r = resistance < 1e-4 ? 1e-4 : resistance;
   double distance =
-    sqrt(target_position(0) * target_position(0) + target_position(1) * target_position(1))-0.3;
+    sqrt(target_position(0) * target_position(0) + target_position(1) * target_position(1))-0.26;
   double angle = atan2(target_position(2), distance);
   double t = (exp(r * distance) - 1) / (r * velocity * cos(angle));
   return t;

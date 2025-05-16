@@ -18,7 +18,7 @@
 #include <rm_utils/logger/log.hpp>
 #include <rm_utils/math/utils.hpp>
 
-namespace rm_auto_aim {
+namespace fyt::auto_aim {
 ArmorPoseEstimator::ArmorPoseEstimator(
     sensor_msgs::msg::CameraInfo::SharedPtr camera_info) {
   // Setup pnp solver

@@ -25,7 +25,7 @@
 #include <openvino_armor_detector/types.hpp>
 #include <rm_utils/math/utils.hpp>
 
-namespace rm_auto_aim {
+namespace fyt::auto_aim {
 
 void VertexYaw::oplusImpl(const double *update) {
   Sophus::SO3d R_yaw = Sophus::SO3d::exp(Eigen::Vector3d(0, 0, update[0])) *

@@ -28,10 +28,13 @@ namespace fyt::auto_aim {
 Solver::Solver(std::weak_ptr<rclcpp::Node> n) : node_(n) {
   auto node = node_.lock();
 
-  shooting_range_w_ = node->declare_parameter("solver.shooting_range_width", 0.2);
-  shooting_range_h_ = node->declare_parameter("solver.shooting_range_height", 0.2);
+  shooting_range_w_ = node->declare_parameter("solver.shooting_range_width", 0.2
+  
+  
+  );
+  shooting_range_h_ = node->declare_parameter("solver.shooting_range_height", 1.0);
   max_tracking_v_yaw_ = node->declare_parameter("solver.max_tracking_v_yaw", 6.0);
-  prediction_delay_ = node->declare_parameter("solver.prediction_delay", -0.1);
+  prediction_delay_ = node->declare_parameter("solver.prediction_delay", 0.0);
   controller_delay_ = node->declare_parameter("solver.controller_delay", 0.0);
   side_angle_ = node->declare_parameter("solver.side_angle", 15.0);
   min_switching_v_yaw_ = node->declare_parameter("solver.min_switching_v_yaw", 1.0);
@@ -94,127 +97,11 @@ rm_interfaces::msg::GimbalCmd Solver::solve(const rm_interfaces::msg::Target &ta
   double flying_time = trajectory_compensator_->getFlyingTime(target_position);
   double dt =
     (current_time - rclcpp::Time(target.header.stamp)).seconds() + flying_time + prediction_delay_;
-
-  // //fix flyingtime 
-  // int iterrations =3;
-  // for(int i=0;i<iterrations;i++){
-  //   //std::cout<<"迭代次数: "<<i<<std::endl;
-  //   target_position.x() += dt * target.velocity.x;
-  //   target_position.y() += dt * target.velocity.y;
-  //   target_position.z() += dt * target.velocity.z;
-  //   target_yaw += dt * target.v_yaw;
-
-  //   std::vector<ArmorData> current_armors;
-
-  //   if(target.armors_num ==4){//r1是当前装甲板的轴向半径，
-  //     // printf("armors_num %d",target_data.armors_num);
-  //     // printf("\n");
-  
-  //     //计算四块装甲板的位置
-  //     //target发布的
-  //     ArmorData armor1;
-  //     armor1.x = target_position.x() - target.radius_1 * cos(target_yaw);
-  //     armor1.y = target_position.y() - target.radius_1 * sin(target_yaw);
-  //     armor1.z = target_position.z() + target.d_zc;
-  //     armor1.yaw = target_yaw;
-  
-  //     //target顺时针旋转90度的
-  //     ArmorData armor2;
-  //     armor2.x = target_position.x() - target.radius_2 * cos(target_yaw+M_PI/2);
-  //     armor2.y = target_position.y() - target.radius_2 * sin(target_yaw+M_PI/2);
-  //     armor2.z = target_position.z() + target.d_zc + target.d_za;//当前装甲是较低，dz>0，较高,dz<0
-  //     armor2.yaw = target_yaw+M_PI/2;
-  
-  //     //target逆时针旋转90度的
-  //     ArmorData armor3;
-  //     armor3.x = target_position.x() - target.radius_2 * cos(target_yaw-M_PI/2);
-  //     armor3.y = target_position.y() - target.radius_2 * sin(target_yaw-M_PI/2);
-  //     armor3.z = target_position.z() + target.d_zc + target.d_za;//当前装甲是较低的，dz>0，较高的dz<0
-  //     armor3.yaw = target_yaw-M_PI/2;
-  
-  
-  //     //target顺时针旋转180度的
-  //     ArmorData armor4;
-  //     armor4.x = target_position.x() - target.radius_1 * cos(target_yaw+M_PI);
-  //     armor4.y = target_position.y() - target.radius_1 * sin(target_yaw+M_PI);
-  //     armor4.z = target_position.z() + target.d_zc;
-  //     armor4.yaw = target_yaw+M_PI;
-  
-  //     //将四块装甲板的数据存入vector
-  //     current_armors.push_back(armor1);
-  //     current_armors.push_back(armor2);
-  //     current_armors.push_back(armor3);
-  //     current_armors.push_back(armor4);
-  
-  
-  //   }
-  
-  //   else if (target.armors_num == 3)
-  //   {
-  //     // printf("armors_num %d",target_data.armors_num);
-  //     // printf("\n");
-  
-  //     //printf("预测yaw预量: %f \n",float(yaw-target_data.yaw));
-  //     //计算三块装甲板的位置
-  //     //target发布的
-  //     ArmorData armor1;
-  //     armor1.x = target_position.x() - target.radius_1 * cos(target_yaw);
-  //     armor1.y = target_position.y() - target.radius_1 * sin(target_yaw);
-  //     armor1.z = target_position.z() + target.d_zc;
-  //     armor1.yaw = target_yaw;
-  //     //printf("armor1_yaw %f \n",armor1.yaw);
-  
-  //     //target顺时针旋转120度的
-  //     ArmorData armor2;
-  //     armor2.x = target_position.x() - target.radius_1 * cos(target_yaw+M_PI*2/3);
-  //     armor2.y = target_position.y() - target.radius_1 * sin(target_yaw+M_PI*2/3);
-  //     armor2.z = target_position.z() + target.d_zc;//当前装甲是较低的，dz>0，较高的dz<0
-  //     armor2.yaw = target_yaw+M_PI*2/3;
-  //     //printf("armor2_yaw %f \n",armor2.yaw);
-  
-  //     //target逆时针旋转120度的
-  //     ArmorData armor3;
-  //     armor3.x = target_position.x() - target.radius_1 * cos(target_yaw-M_PI*2/3);
-  //     armor3.y = target_position.y() - target.radius_1 * sin(target_yaw-M_PI*2/3);
-  //     armor3.z = target_position.z() + target.d_zc;//当前装甲是较低的，dz>0，较高的dz<0
-  //     armor3.yaw = target_yaw-M_PI*2/3;
-  //     //printf("armor3_yaw %f \n",armor3.yaw);
-  
-  //     //将三块装甲板的数据存入vector
-  //     current_armors.push_back(armor1);
-  //     current_armors.push_back(armor2);
-  //     current_armors.push_back(armor3);
-  
-  //   }
-
-  //   best_idx =selectBestArmor(current_armors);
-
-  //   if(best_idx==-1) break;
-
-  //   Eigen::Vector3d best_armor(current_armors[best_idx].x,
-  //                               current_armors[best_idx].y,
-  //                               current_armors[best_idx].z);
-  //   double flying_time2=trajectory_compensator_->getFlyingTime(best_armor);
-  //   double new_dt=(current_time - rclcpp::Time(target.header.stamp)).seconds() + flying_time2 + prediction_delay_;
-
-  //   std::cout<<"dt: "<<dt<<std::endl;
-
-  //   std::cout<<"new_dt: "<<new_dt<<std::endl;
-
-  //   if(std::fabs(new_dt-dt)<0.005) break;
-  //   dt = (dt+new_dt)/2;
-
-
-  // }
-
-  
-  //修正完毕，开始预测
   target_position.x() += dt * target.velocity.x;
   target_position.y() += dt * target.velocity.y;
   target_position.z() += dt * target.velocity.z;
-  //std::cout<<"v_yaw"<<target.v_yaw<<std::endl;
-  target_yaw += dt * target.v_yaw*1.62;//角速度比例系数
-
+  target_yaw += dt * target.v_yaw*1.5;//角速度比例系数
+  std::cout<<"dt_  "<<dt<<std::endl;
   //清空armors_data
   armors_data.clear();
 
@@ -271,24 +158,24 @@ rm_interfaces::msg::GimbalCmd Solver::solve(const rm_interfaces::msg::Target &ta
     //计算三块装甲板的位置
     //target发布的
     ArmorData armor1;
-    armor1.x = target_position.x() - target.radius_1 * cos(target_yaw);
-    armor1.y = target_position.y() - target.radius_1 * sin(target_yaw);
+    armor1.x = target_position.x() - target.radius_2 * cos(target_yaw);
+    armor1.y = target_position.y() - target.radius_2 * sin(target_yaw);
     armor1.z = target_position.z() + target.d_zc;
     armor1.yaw = target_yaw;
     //printf("armor1_yaw %f \n",armor1.yaw);
 
     //target顺时针旋转120度的
     ArmorData armor2;
-    armor2.x = target_position.x() - target.radius_1 * cos(target_yaw+M_PI*2/3);
-    armor2.y = target_position.y() - target.radius_1 * sin(target_yaw+M_PI*2/3);
+    armor2.x = target_position.x() - target.radius_2 * cos(target_yaw+M_PI*2/3);
+    armor2.y = target_position.y() - target.radius_2 * sin(target_yaw+M_PI*2/3);
     armor2.z = target_position.z() + target.d_zc;//当前装甲是较低的，dz>0，较高的dz<0
     armor2.yaw = target_yaw+M_PI*2/3;
     //printf("armor2_yaw %f \n",armor2.yaw);
 
     //target逆时针旋转120度的
     ArmorData armor3;
-    armor3.x = target_position.x() - target.radius_1 * cos(target_yaw-M_PI*2/3);
-    armor3.y = target_position.y() - target.radius_1 * sin(target_yaw-M_PI*2/3);
+    armor3.x = target_position.x() - target.radius_2 * cos(target_yaw-M_PI*2/3);
+    armor3.y = target_position.y() - target.radius_2 * sin(target_yaw-M_PI*2/3);
     armor3.z = target_position.z() + target.d_zc;//当前装甲是较低的，dz>0，较高的dz<0
     armor3.yaw = target_yaw-M_PI*2/3;
     //printf("armor3_yaw %f \n",armor3.yaw);
@@ -299,10 +186,11 @@ rm_interfaces::msg::GimbalCmd Solver::solve(const rm_interfaces::msg::Target &ta
     armors_data.push_back(armor3);
 
   }
-  
+
   // Choose the best armor to shoot
-  best_idx =selectBestArmor(armors_data);
-  auto chosen_armor_position = armors_data[best_idx];//chosen_armor_position是armordata类
+
+  int idx =selectBestArmor(armors_data);
+  auto chosen_armor_position = armors_data[idx];//chosen_armor_position是armordata类
   Eigen::Vector3d chosen_armor_position_vector(chosen_armor_position.x,chosen_armor_position.y,chosen_armor_position.z);//描述装甲板的xyz向量
 
   if (std::sqrt(chosen_armor_position.x*chosen_armor_position.x
@@ -327,16 +215,13 @@ rm_interfaces::msg::GimbalCmd Solver::solve(const rm_interfaces::msg::Target &ta
     gimbal_cmd.distance = distance;
     gimbal_cmd.fire_advice=false;//重置开火指令
 
-    //std::cout<<"armor yaw "<<chosen_armor_position.yaw<<std::endl;
-
-    //std::cout<<"gimbal yaw "<<rpy_[2]<<std::endl;
     //使用yaw角度，防止击打过于侧面的装甲板
-    if(std::fabs(chosen_armor_position.yaw-rpy_[2])<0.2 ){
-      std::cout<<"计算pitch"<<pitch<<std::endl;
-      std::cout<<"电控pitch"<<rpy_[1]<<std::endl;
+    if(chosen_armor_position.yaw>-0.3 && chosen_armor_position.yaw <0.3){
+
       if(isOnTarget(rpy_[2], rpy_[1], yaw, pitch, distance)){
         gimbal_cmd.fire_advice=true;
       }
+
 
     }
 
@@ -346,6 +231,7 @@ rm_interfaces::msg::GimbalCmd Solver::solve(const rm_interfaces::msg::Target &ta
     double yaw_offset = angle_offset[1] * M_PI / 180;
     double cmd_pitch = pitch + pitch_offset;
     double cmd_yaw = angles::normalize_angle(yaw + yaw_offset);
+
 
     // gimbal_cmd.yaw = cmd_yaw * 180 / M_PI;
     // gimbal_cmd.pitch = cmd_pitch * 180 / M_PI; 
@@ -361,7 +247,7 @@ rm_interfaces::msg::GimbalCmd Solver::solve(const rm_interfaces::msg::Target &ta
   else if (target.armors_num == 3){
 
     // Calculate yaw, pitch, distance
-    calcYawAndPitch(chosen_armor_position_vector, rpy_, yaw, pitch);//瞄准中心
+    calcYawAndPitch(target_position, rpy_, yaw, pitch);//瞄准中心
     double distance = std::sqrt(chosen_armor_position.x*chosen_armor_position.x+chosen_armor_position.y*chosen_armor_position.y);
     //std::cout<<"distance:"<<distance<<std::endl;
     // Initialize gimbal_cmd
@@ -370,13 +256,24 @@ rm_interfaces::msg::GimbalCmd Solver::solve(const rm_interfaces::msg::Target &ta
     gimbal_cmd.distance = distance;
     gimbal_cmd.fire_advice=false;//重置开火指令
 
+    for (size_t i = 0; i < armors_data.size(); i++){
+      //printf("容器大小 %lu \n",armors_data.size());
+      //std::cout<<armors_data.size<<std::endl
+      ArmorData armor_temp=armors_data[i];
+      //std::cout<<std::fabs(yaw-armor_temp.yaw)<<std::endl;
+      std::cout<<"armor_temp";
+      std::cout<<armor_temp.yaw<<std::endl;
+      std::cout<<"yaw";
+      std::cout<<yaw<<std::endl;
+      
+      //判断yaw是否在可击打范围内
+      if(std::fabs(yaw-armor_temp.yaw)<0.1){
+        
+        if(isOnTarget(rpy_[2], rpy_[1], yaw, pitch, distance)){
+          gimbal_cmd.fire_advice=true;
+        }
 
-    if(std::fabs(chosen_armor_position.yaw-rpy_[2])<0.6 ){
-      //std::cout<<"计算pitch"<<pitch<<std::endl;
-      //std::cout<<"电控pitch"<<rpy_[1]<<std::endl;
-
-      gimbal_cmd.fire_advice=true;
-
+      }
 
     }
 

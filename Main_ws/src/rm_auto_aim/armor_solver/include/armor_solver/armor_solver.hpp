@@ -63,7 +63,6 @@ public:
   
   //定义一个vector储存所有装甲板的数据
     std::vector<ArmorData> armors_data;
-  int best_idx =-1;
 
 private:
   // // Get the armor positions from the target robot

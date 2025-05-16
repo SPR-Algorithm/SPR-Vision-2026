@@ -37,7 +37,7 @@
 #include <openvino_armor_detector/types.hpp>
 #include <openvino_armor_detector/openvino_detector.hpp>
 
-namespace rm_auto_aim {
+namespace fyt::auto_aim {
 // Vertex of graph optimization algorithm for the yaw angle
 class VertexYaw : public g2o::BaseVertex<1, double> {
 public:

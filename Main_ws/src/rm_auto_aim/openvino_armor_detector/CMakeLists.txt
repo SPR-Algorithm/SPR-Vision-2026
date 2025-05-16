@@ -109,7 +109,7 @@ target_link_libraries(${PROJECT_NAME}
 ament_target_dependencies(${PROJECT_NAME} ${ros_dependencies})
 
 rclcpp_components_register_node(${PROJECT_NAME}
-  PLUGIN "rm_auto_aim::OpenVINODetectNode"
+  PLUGIN "fyt::auto_aim::OpenVINODetectNode"
   EXECUTABLE detector_node
 )
 

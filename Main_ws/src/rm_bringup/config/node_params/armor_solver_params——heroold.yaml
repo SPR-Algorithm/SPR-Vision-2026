@@ -5,8 +5,8 @@
     max_armor_distance: 10.0
 
     ekf:
-      sigma2_q_x: 0.1
-      sigma2_q_y: 0.1
+      sigma2_q_x: 0.05
+      sigma2_q_y: 0.05
       sigma2_q_z: 0.05
       sigma2_q_yaw: 1.5
       sigma2_q_r: 80.0
@@ -31,7 +31,7 @@
       bullet_speed: 20.0
       compenstator_type: "ideal"
       gravity: 9.8
-      resistance: 0.0
+      resistance: 0.092
       iteration_times: 20 # 补偿的迭代次数
       # ["距离下限, 距离上限, 高度下限, 高度上限, pitch轴补偿值"]
       angle_offset: [

@@ -308,7 +308,7 @@ void ArmorSolverNode::armorsCallback(const rm_interfaces::msg::Armors::SharedPtr
     dt_ = (time - last_time_).seconds();
     tracker_->lost_thres = std::abs(static_cast<int>(lost_time_thres_ / dt_));
     if (tracker_->tracked_id == "outpost") {
-      tracker_->ekf->setPredictFunc(Predict{dt_, MotionModel::CONSTANT_VEL_ROT});
+      tracker_->ekf->setPredictFunc(Predict{dt_, MotionModel::CONSTANT_ROTATION});
     } else {
       tracker_->ekf->setPredictFunc(Predict{dt_, MotionModel::CONSTANT_VEL_ROT});
     }

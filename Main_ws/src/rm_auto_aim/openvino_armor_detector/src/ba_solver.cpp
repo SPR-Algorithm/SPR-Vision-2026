@@ -32,7 +32,7 @@
 #include <rm_utils/logger/log.hpp>
 #include <rm_utils/math/utils.hpp>
 
-namespace rm_auto_aim {
+namespace fyt::auto_aim {
 G2O_USE_OPTIMIZATION_LIBRARY(dense)
 
 BaSolver::BaSolver(std::array<double, 9> &camera_matrix,

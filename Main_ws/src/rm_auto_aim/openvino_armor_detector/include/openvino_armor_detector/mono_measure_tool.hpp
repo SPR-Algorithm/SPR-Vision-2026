@@ -20,7 +20,7 @@
 #include <openvino_armor_detector/openvino_detector.hpp>
 #include <openvino_armor_detector/types.hpp>
 
-namespace rm_auto_aim
+namespace fyt::auto_aim
 {
 
 class MonoMeasureTool
