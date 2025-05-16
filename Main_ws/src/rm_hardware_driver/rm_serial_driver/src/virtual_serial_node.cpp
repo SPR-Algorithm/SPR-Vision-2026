@@ -50,7 +50,7 @@ public:
     serial_receive_data_msg_.header.frame_id = "odom";
     serial_receive_data_msg_.bullet_speed = 25.0;
     transform_stamped_.header.frame_id = "odom";
-    transform_stamped_.child_frame_id = "gimbal_link";
+    transform_stamped_.child_frame_id = "gimbal_link_aim";
     serial_receive_data_msg_.mode = 0;
     serial_receive_data_msg_.roll = this->declare_parameter("roll", 0.0);
     serial_receive_data_msg_.pitch = this->declare_parameter("pitch", 0.0);
@@ -88,7 +88,7 @@ public:
       q.setRPY(roll * M_PI / 180.0, -pitch * M_PI / 180.0, yaw * M_PI / 180.0);
       transform_stamped_.transform.rotation = tf2::toMsg(q);
       transform_stamped_.header.frame_id = "odom";
-      transform_stamped_.child_frame_id = "gimbal_link";
+      transform_stamped_.child_frame_id = "gimbal_link_aim";
       // serial_receive_data_msg.mode = mode;
       serial_receive_data_pub_->publish(serial_receive_data_msg_);
       transform_stamped_.header.stamp = this->now();

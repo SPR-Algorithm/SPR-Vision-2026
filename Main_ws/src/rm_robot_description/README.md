@@ -9,7 +9,7 @@ RoboMaster 视觉自瞄系统所需的 URDF
 
 单位和方向请参考 https://www.ros.org/reps/rep-0103.html
 
-odom: 以云台中心为原点的惯性系
+odom_aim: 以云台中心为原点的惯性系
 
 yaw_joint: 表述云台的 yaw 轴与惯性系的旋转关系
 

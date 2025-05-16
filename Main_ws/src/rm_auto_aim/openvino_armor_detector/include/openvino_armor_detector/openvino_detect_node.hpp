@@ -32,7 +32,7 @@
 #include <rm_interfaces/srv/set_mode.hpp>
 #include <openvino_armor_detector/armor_pose_estimator.hpp>
 
-namespace rm_auto_aim
+namespace fyt::auto_aim
 {
 
 class OpenVINODetectNode : public rclcpp::Node
@@ -61,7 +61,8 @@ private:
   std::string frame_id_;//帧ID
   // OpenVINO Detector
   int detect_color_;  // 0: red, 1: blue
-  std::unique_ptr<OpenVINODetector> detector_;//OpenVINODetector指针
+  //std::unique_ptr<OpenVINODetector> detector_;//OpenVINODetector指针
+  std::shared_ptr<OpenVINODetector> detector_;
   std::queue<std::future<bool>> detect_requests_;//检测请求队列
 
   // Camera info

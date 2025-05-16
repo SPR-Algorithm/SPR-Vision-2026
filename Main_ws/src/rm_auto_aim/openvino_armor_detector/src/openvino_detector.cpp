@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "openvino_armor_detector/openvino_detector.hpp"
 
-namespace rm_auto_aim
+namespace fyt::auto_aim
 {
 static const int INPUT_W =640;
 static const int INPUT_H =640;
@@ -61,9 +61,16 @@ std::future<bool> OpenVINODetector::push_input(const cv::Mat & resize_img, int d
   }
 
   // Start async detect
+//   return std::async(
+//     std::launch::async, &OpenVINODetector::infer_callback, this, resize_img, detect_color_,
+//     timestamp_nanosec);
+
   return std::async(
-    std::launch::async, &OpenVINODetector::infer_callback, this, resize_img, detect_color_,
-    timestamp_nanosec);
+    std::launch::async, 
+    [this, img = resize_img.clone(), detect_color_, timestamp_nanosec]() { // 使用 clone() 深拷贝
+        return this->infer_callback(img, detect_color_, timestamp_nanosec);
+    }
+    );
 }
 
 
@@ -90,6 +97,7 @@ OpenVINODetector::OpenVINODetector(string model_path_xml, string model_path_bin,
 
 
 bool OpenVINODetector::infer_callback(Mat img, int detect_color,int64_t timestamp_nanosec){//推理回调函数
+    std::lock_guard<std::mutex> lock(mutex_);
     objects.clear();
     tmp_objects.clear();
     ious.clear();
@@ -100,7 +108,9 @@ bool OpenVINODetector::infer_callback(Mat img, int detect_color,int64_t timestam
     //int rows = img.rows;
     //int cols = img.cols;
 
-    uchar* input_data = (uchar *)img.data; // 创建一个新的float数组
+    //uchar* input_data = (uchar *)img.data; // 创建一个新的float数组、
+    cv::Mat img_copy = img.clone();
+    uchar* input_data = img_copy.data;
     ov::Tensor input_tensor = ov::Tensor(compiled_model.input().get_element_type(),
      compiled_model.input().get_shape(), input_data);
      
@@ -122,7 +132,7 @@ bool OpenVINODetector::infer_callback(Mat img, int detect_color,int64_t timestam
     //std::cout << "The shape of output tensor:"<<output_shape << std::endl;
     // 25200 x 85 Matrix
     cv::Mat output_buffer(output_shape[1], output_shape[2], CV_32F, output.data());
-    float conf_threshold = 0.65 ;
+    float conf_threshold = 0.45 ;
     float nms_threshold = 0.45;
     std::vector<cv::Rect> boxes;
     std::vector<int> class_ids;
@@ -233,7 +243,7 @@ bool OpenVINODetector::infer_callback(Mat img, int detect_color,int64_t timestam
     std::vector<int> indices;
     cv::dnn::NMSBoxes(boxes, confidences, conf_threshold, nms_threshold, indices);
     for(int valid_index:indices){
-        if(valid_index <= int(objects.size())){
+        if(valid_index < int(objects.size())){
             tmp_objects.push_back(objects[valid_index]);
         }
     }

@@ -1,7 +1,7 @@
 /**:
   ros__parameters:
     debug: true
-    target_frame: odom
+    target_frame: odom_aim
     max_armor_distance: 10.0
 
     ekf:
@@ -17,7 +17,7 @@
       r_yaw: 5e-3
 
     tracker:
-      max_match_distance: 2.0
+      max_match_distance: 1.5
       max_match_yaw_diff: 0.65 #前哨给大，其他给小
 
       tracking_thres: 2
@@ -28,26 +28,14 @@
       controller_delay: 0.0
       max_tracking_v_yaw: 60.0 #转速(rad/s)大于这个值时瞄准机器人中心 
       side_angle: 20.0 
-      bullet_speed: 24.0
+      bullet_speed: 27.0
       compenstator_type: "ideal"
-      gravity: 9.8
+      gravity: 9.6
       resistance: 0.092
       iteration_times: 20 # 补偿的迭代次数
       # ["距离下限, 距离上限, 高度下限, 高度下限, pitch轴补偿值"]
       angle_offset: [
-        "0.0 0.0 0.0 0.0 0.0 0.0",
-        "0.0 0.0 0.0 0.0 0.0 0.0",
-        "0.0 0.0 0.0 0.0 0.0 0.0",
-        "0.0 0.0 0.0 0.0 0.0 0.0",
-        #"2.0 3.0 -1.0 1.2 4.5 1.5",
-        #"3.0 8.0 -1.0 1.2 3.5 1.5",
-        
-        #"6.0 7.0 -1.0 0.4 0.0",
-        #"6.0 7.0  0.4 0.8 0.0",
-        #"6.0 7.0  0.8 1.2 0.0",
-        #"7.0 8.0 -1.0 0.4 0.0",
-        #"7.0 8.0  0.4 0.8 0.0",
-        #"7.0 8.0  0.8 1.2 0.0",
+        "0.0 0.0 0.0 0.0 0.0 ",
       ]
 
 
@@ -57,7 +45,7 @@
 # /**:
 #   ros__parameters:
 #     debug: true
-#     target_frame: odom
+#     target_frame: odom_aim
 #     max_armor_distance: 10.0
 
 #     ekf:

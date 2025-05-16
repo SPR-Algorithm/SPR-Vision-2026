@@ -1,13 +1,10 @@
-#全向
-odom2camera:
-  xyz: "\"0.06 0.0  0.035\""
-  rpy: "\"0.0  0.0  0.0\""
-
-# #sentry
 # odom2camera:
-#   xyz: "\"0.09 0.0  0.03\""
+#   xyz: "\"0.06 0.0  0.08\""
 #   rpy: "\"0.0  0.0  0.0\""
 
+odom2camera:
+  xyz: "\"0.09 0.0  0.03\""
+  rpy: "\"0.0  0.0  0.0\""
 # 设置启动参数 
 # 命名空间 所有节点、话题都会以这个命名空间开头，如/some_namespace/image_raw
 namespace: ''

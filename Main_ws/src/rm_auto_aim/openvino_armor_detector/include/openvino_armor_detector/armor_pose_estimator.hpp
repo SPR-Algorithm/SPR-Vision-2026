@@ -34,7 +34,7 @@
 #include <rm_utils/math/pnp_solver.hpp>
 
 
-namespace rm_auto_aim {
+namespace fyt::auto_aim {
 class ArmorPoseEstimator {
 public:
   explicit ArmorPoseEstimator(sensor_msgs::msg::CameraInfo::SharedPtr camera_info);

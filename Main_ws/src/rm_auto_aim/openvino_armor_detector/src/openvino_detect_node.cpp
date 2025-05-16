@@ -18,21 +18,27 @@
 
 #include <rmoss_util/url_resolver.hpp>
 
-namespace rm_auto_aim
+#include "rm_utils/logger/log.hpp"
+
+namespace fyt::auto_aim
 {
 OpenVINODetectNode::OpenVINODetectNode(rclcpp::NodeOptions options)
 : Node("openvino_detect_node", options.use_intra_process_comms(true))
 {
+
+  FYT_REGISTER_LOGGER("armor_detector", "~/fyt2024-log", INFO);
+  FYT_INFO("armor_detector", "Starting ArmorDetectorNode!");
+
   RCLCPP_INFO(this->get_logger(), "Initializing detect node");
 
   RCLCPP_INFO(this->get_logger(), "Initializing OpenVINO");
   detector_ = nullptr;
 
   //实例化检测器
-  string model_path_xml="/home/spr/SPR-Vision-2025-main-zsh/src/rm_auto_aim/openvino_armor_detector/model/0708.xml";
-  string model_path_bin="/home/spr/SPR-Vision-2025-main-zsh/src/rm_auto_aim/openvino_armor_detector/model/0708.bin";
+  string model_path_xml="/home/spr/SPR-Vision-2025-main-sentry/src/rm_auto_aim/openvino_armor_detector/model/0708.xml";
+  string model_path_bin="/home/spr/SPR-Vision-2025-main-sentry/src/rm_auto_aim/openvino_armor_detector/model/0708.bin";
   string device="GPU";
-  detector_=std::make_unique<OpenVINODetector>(model_path_xml,model_path_bin,device);
+  detector_=std::make_shared<OpenVINODetector>(model_path_xml,model_path_bin,device);
   detector_->set_callback(
     std::bind(
       &OpenVINODetectNode::openvino_detect_callback, this, std::placeholders::_1,
@@ -48,7 +54,7 @@ OpenVINODetectNode::OpenVINODetectNode(rclcpp::NodeOptions options)
   param_desc.integer_range.resize(1);
   param_desc.integer_range[0].from_value = 0;
   param_desc.integer_range[0].to_value = 1;
-  detect_color_ = this->declare_parameter("detect_color", 0, param_desc);
+  detect_color_ = this->declare_parameter("detect_color", 1, param_desc);
 
   auto use_sensor_data_qos = this->declare_parameter("use_sensor_data_qos", false);
 
@@ -80,7 +86,7 @@ OpenVINODetectNode::OpenVINODetectNode(rclcpp::NodeOptions options)
     rclcpp::SensorDataQoS());
   
   // Transform initialize
-  odom_frame_ = this->declare_parameter("target_frame", "odom");
+  odom_frame_ = this->declare_parameter("target_frame", "odom_aim");
   imu_to_camera_ = Eigen::Matrix3d::Identity();
 
   // // Tricks to make pose more accurate
@@ -156,7 +162,7 @@ OpenVINODetectNode::OpenVINODetectNode(rclcpp::NodeOptions options)
 void OpenVINODetectNode::img_callback(const sensor_msgs::msg::Image::ConstSharedPtr & img_msg)//图像回调函数,订阅到图像消息后开始推理
 {
   detect_color_= get_parameter("detect_color").as_int();
-  //Get the transform from odom to gimbal
+  //Get the transform from odom_aim to gimbal
   try {
     rclcpp::Time target_time = img_msg->header.stamp;
     //std::cout<<odom_frame_<<std::endl;
@@ -187,8 +193,11 @@ void OpenVINODetectNode::img_callback(const sensor_msgs::msg::Image::ConstShared
   frame_id_ = img_msg->header.frame_id;
   auto img = cv_bridge::toCvCopy(img_msg, "rgb8")->image;
   //RCLCPP_INFO(this->get_logger(),"Image_size: %d x %d",img.cols,img.rows);
-
-  cv::Mat resize_img=detector_->letterbox(img);//resize
+  
+  cv::Mat flipped_img;
+  cv::flip(img, flipped_img, -1);//竖直方向翻转（相机反装时）
+  
+  cv::Mat resize_img = detector_->letterbox(flipped_img); 
 
   // push image to detector
   detect_requests_.push(std::move(detector_->push_input(resize_img,detect_color_, timestamp.nanoseconds())));
@@ -199,9 +208,8 @@ void OpenVINODetectNode::img_callback(const sensor_msgs::msg::Image::ConstShared
 void OpenVINODetectNode::openvino_detect_callback(
   const std::vector<ArmorObject> & objs, int64_t timestamp_nanosec,
   const cv::Mat & resized_img){
-
+    
   detect_color_= get_parameter("detect_color").as_int();
-
   //std::cout<<"进入推理回调"<<std::endl;
   if (measure_tool_ == nullptr) {
     RCLCPP_WARN(this->get_logger(), "No camera_info recieve yet.");
@@ -456,4 +464,4 @@ void OpenVINODetectNode::destroy_debug_publishers()
 // Register the component with class_loader.
 // This acts as a sort of entry point, allowing the component to be discoverable when its library
 // is being loaded into a running process.
-RCLCPP_COMPONENTS_REGISTER_NODE(rm_auto_aim::OpenVINODetectNode)
+RCLCPP_COMPONENTS_REGISTER_NODE(fyt::auto_aim::OpenVINODetectNode)

@@ -1,31 +1,31 @@
-#全向轮
+# #全向轮
 
-image_width: 1280
-image_height: 1024
-camera_name: narrow_stereo
-camera_matrix:
-  rows: 3
-  cols: 3
-  data: [2009.95354,    0.     ,  661.80486,
-            0.     , 2015.28995,  541.61636,
-            0.     ,    0.     ,    1.     ]
-distortion_model: plumb_bob
-distortion_coefficients:
-  rows: 1
-  cols: 5
-  data: [-0.086832, 0.404938, 0.001267, 0.001916, 0.000000]
-rectification_matrix:
-  rows: 3
-  cols: 3
-  data: [1., 0., 0.,
-         0., 1., 0.,
-         0., 0., 1.]
-projection_matrix:
-  rows: 3
-  cols: 4
-  data: [2002.29504,    0.     ,  662.4823 ,    0.     ,
-            0.     , 2008.44922,  541.65599,    0.     ,
-            0.     ,    0.     ,    1.     ,    0.     ]
+# image_width: 1280
+# image_height: 1024
+# camera_name: narrow_stereo
+# camera_matrix:
+#   rows: 3
+#   cols: 3
+#   data: [2009.95354,    0.     ,  661.80486,
+#             0.     , 2015.28995,  541.61636,
+#             0.     ,    0.     ,    1.     ]
+# distortion_model: plumb_bob
+# distortion_coefficients:
+#   rows: 1
+#   cols: 5
+#   data: [-0.086832, 0.404938, 0.001267, 0.001916, 0.000000]
+# rectification_matrix:
+#   rows: 3
+#   cols: 3
+#   data: [1., 0., 0.,
+#          0., 1., 0.,
+#          0., 0., 1.]
+# projection_matrix:
+#   rows: 3
+#   cols: 4
+#   data: [2002.29504,    0.     ,  662.4823 ,    0.     ,
+#             0.     , 2008.44922,  541.65599,    0.     ,
+#             0.     ,    0.     ,    1.     ,    0.     ]
 
 # #舵轮
 # image_width: 1280
@@ -85,7 +85,33 @@ projection_matrix:
 #             0.     , 1849.77026,  537.93922,    0.     ,
 #             0.     ,    0.     ,    1.     ,    0.     ]
 
-
+#hik 8mm
+image_width: 1440
+image_height: 1080
+camera_name: narrow_stereo
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [2320.79214,    0.     ,  690.87835,
+            0.     , 2322.74154,  513.36538,
+            0.     ,    0.     ,    1.     ]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [-0.069606, 0.010420, -0.004341, -0.001717, 0.000000]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1., 0., 0.,
+         0., 1., 0.,
+         0., 0., 1.]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [2303.86377,    0.     ,  688.82086,    0.     ,
+            0.     , 2310.99072,  511.01474,    0.     ,
+            0.     ,    0.     ,    1.     ,    0.     ]
 # #hik 12mm
 
 # image_width: 1440

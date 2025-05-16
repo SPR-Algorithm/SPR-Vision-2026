@@ -19,7 +19,7 @@
 
 #include <opencv2/core/mat.hpp>
 
-namespace rm_auto_aim
+namespace fyt::auto_aim
 {
 
 enum class ArmorColor

@@ -78,7 +78,7 @@ private:
   // Publisher
   rclcpp::Publisher<rm_interfaces::msg::SerialReceiveData>::SharedPtr serial_receive_data_pub_;
 
-  // Broadcast tf from odom to gimbal_link
+  // Broadcast tf from odom to gimbal_link_aim
   double timestamp_offset_ = 0;
   std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
 

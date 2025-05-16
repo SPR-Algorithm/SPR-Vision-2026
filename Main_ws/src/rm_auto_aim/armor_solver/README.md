@@ -18,7 +18,7 @@
 ### 参数 
 
 * `debug` (`bool`, default: false) - 是否开启调试模式
-* `target_frame` (`string`, default: "odom") - 目标坐标系
+* `target_frame` (`string`, default: "odom_aim") - 目标坐标系
 * `ekf.sigma2_q_xyz` (`double`, default: 0.05) - 状态转移噪声方差 (x,y,z)
 * `ekf.sigma2_q_yaw` (`double`, default: 1.0) - 状态转移噪声方差 (yaw)
 * `ekf.sigma2_q_r` (`double`, default: 80.0) - 状态转移噪声方差 (r)

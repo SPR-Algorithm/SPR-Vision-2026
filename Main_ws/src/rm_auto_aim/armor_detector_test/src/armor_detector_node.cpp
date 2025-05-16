@@ -70,7 +70,7 @@ ArmorDetectorNode::ArmorDetectorNode(const rclcpp::NodeOptions &options)
       "armor_detector/armors", rclcpp::SensorDataQoS());
 
   // Transform initialize
-  odom_frame_ = this->declare_parameter("target_frame", "odom");
+  odom_frame_ = this->declare_parameter("target_frame", "odom_aim");
   imu_to_camera_ = Eigen::Matrix3d::Identity();
 
   // Visualization Marker Publisher

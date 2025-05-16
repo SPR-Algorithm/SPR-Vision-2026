@@ -119,7 +119,7 @@ ArmorSolverNode::ArmorSolverNode(const rclcpp::NodeOptions &options)
   tf2_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf2_buffer_);
   // subscriber and filter
   armors_sub_.subscribe(this, "armor_detector/armors", rmw_qos_profile_sensor_data);
-  target_frame_ = this->declare_parameter("target_frame", "odom");
+  target_frame_ = this->declare_parameter("target_frame", "odom_aim");
   tf2_filter_ = std::make_shared<tf2_filter>(armors_sub_,
                                              *tf2_buffer_,
                                              target_frame_,
@@ -425,7 +425,7 @@ void ArmorSolverNode::publishMarkers(const rm_interfaces::msg::Target &target_ms
 
     trajectory_marker_.action = visualization_msgs::msg::Marker::ADD;
     trajectory_marker_.points.clear();
-    trajectory_marker_.header.frame_id = "gimbal_link";
+    trajectory_marker_.header.frame_id = "gimbal_link_aim";
     for (const auto &point : solver_->getTrajectory()) {
       geometry_msgs::msg::Point p;
       p.x = point.first;

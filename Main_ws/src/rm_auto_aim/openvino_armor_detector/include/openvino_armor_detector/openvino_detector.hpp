@@ -20,7 +20,7 @@ using namespace std;
 
 // #define mean
 
-namespace rm_auto_aim
+namespace fyt::auto_aim
 {
 
 
@@ -59,8 +59,8 @@ struct ArmorObject
     cv::Point2f center;   //装甲板中心
 
     // Armor size, Unit: m
-    double coefficient_width = 1280.0 / 640.0;
-    double coefficient_height = 1024.0 / 640.0;
+    double coefficient_width = 1440.0 / 640.0;
+    double coefficient_height = 1080.0 / 640.0;
     
 
     // Build the points in the object coordinate system, start from bottom left in
@@ -95,6 +95,7 @@ public:
     double ans;
     vector<double> ious;
     vector<ArmorObject> tmp_objects;
+    std::mutex mutex_;
     std::shared_ptr<ov::Model> model;
     ov::Core core;
     ov::preprocess::PrePostProcessor *ppp;

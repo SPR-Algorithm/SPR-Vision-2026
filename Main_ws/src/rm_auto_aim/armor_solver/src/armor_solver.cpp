@@ -75,7 +75,7 @@ rm_interfaces::msg::GimbalCmd Solver::solve(const rm_interfaces::msg::Target &ta
   // Get current roll, yaw and pitch of gimbal
   try {
     auto gimbal_tf =
-      tf2_buffer_->lookupTransform(target.header.frame_id, "gimbal_link", tf2::TimePointZero);
+      tf2_buffer_->lookupTransform(target.header.frame_id, "gimbal_link_aim", tf2::TimePointZero);
     auto msg_q = gimbal_tf.transform.rotation;
 
     tf2::Quaternion tf_q;
@@ -213,7 +213,7 @@ rm_interfaces::msg::GimbalCmd Solver::solve(const rm_interfaces::msg::Target &ta
   target_position.y() += dt * target.velocity.y;
   target_position.z() += dt * target.velocity.z;
   //std::cout<<"v_yaw"<<target.v_yaw<<std::endl;
-  target_yaw += dt * target.v_yaw*1.62;//角速度比例系数
+  target_yaw += dt * target.v_yaw*1.6;//角速度比例系数
 
   //清空armors_data
   armors_data.clear();
@@ -332,8 +332,8 @@ rm_interfaces::msg::GimbalCmd Solver::solve(const rm_interfaces::msg::Target &ta
     //std::cout<<"gimbal yaw "<<rpy_[2]<<std::endl;
     //使用yaw角度，防止击打过于侧面的装甲板
     if(std::fabs(chosen_armor_position.yaw-rpy_[2])<0.2 ){
-      std::cout<<"计算pitch"<<pitch<<std::endl;
-      std::cout<<"电控pitch"<<rpy_[1]<<std::endl;
+      //std::cout<<"计算pitch"<<pitch<<std::endl;
+      //std::cout<<"电控pitch"<<rpy_[1]<<std::endl;
       if(isOnTarget(rpy_[2], rpy_[1], yaw, pitch, distance)){
         gimbal_cmd.fire_advice=true;
       }

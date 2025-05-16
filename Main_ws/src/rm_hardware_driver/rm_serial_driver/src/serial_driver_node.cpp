@@ -113,11 +113,11 @@ void SerialDriverNode::listenLoop() {
         }
       }
 
-      //设置颜色
-      if (!initial_set_param_ || receive_data.mode != previous_receive_color_) {
-        //std::cout<<"set color"<<std::endl;
-        setParam(rclcpp::Parameter("detect_color", receive_data.mode));
-        previous_receive_color_ = receive_data.mode;
+       //设置颜色
+       if (!initial_set_param_ || receive_data.mode != previous_receive_color_) {
+         //std::cout<<"set color"<<std::endl;
+         setParam(rclcpp::Parameter("detect_color", receive_data.mode));
+         previous_receive_color_ = receive_data.mode;
       }
 
 
@@ -125,7 +125,7 @@ void SerialDriverNode::listenLoop() {
       timestamp_offset_ = this->get_parameter("timestamp_offset").as_double();
       t.header.stamp = this->now() + rclcpp::Duration::from_seconds(timestamp_offset_);
       t.header.frame_id = target_frame_;
-      t.child_frame_id = "gimbal_link";
+      t.child_frame_id = "gimbal_link_aim";
       // auto roll = receive_data.roll * M_PI / 180.0;
       // auto pitch = -receive_data.pitch * M_PI / 180.0;
       // auto yaw = receive_data.yaw * M_PI / 180.0;

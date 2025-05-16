@@ -238,7 +238,7 @@ rm_interfaces::msg::GimbalCmd RuneSolver::solveGimbalCmd(const Eigen::Vector3d &
   // Get current yaw and pitch of gimbal
   double current_yaw = 0.0, current_pitch = 0.0;
   try {
-    auto gimbal_tf = tf2_buffer_->lookupTransform("odom", "gimbal_link", tf2::TimePointZero);
+    auto gimbal_tf = tf2_buffer_->lookupTransform("odom", "gimbal_link_aim", tf2::TimePointZero);
     auto msg_q = gimbal_tf.transform.rotation;
 
     tf2::Quaternion tf_q;
