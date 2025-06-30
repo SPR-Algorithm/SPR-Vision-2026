@@ -215,3 +215,1023 @@ sudo ldconfig
 针对实际修改：
 各台车的相机内参以及相机-云台变换尺寸
 自启动脚本的目录路径
+```
+SPR-Vision-2026
+├─ Main_ws
+│  └─ src
+│     ├─ auto_aim_interfaces
+│     │  ├─ CMakeLists.txt
+│     │  ├─ msg
+│     │  │  ├─ Armor.msg
+│     │  │  ├─ Armors.msg
+│     │  │  ├─ DebugArmor.msg
+│     │  │  ├─ DebugArmors.msg
+│     │  │  ├─ DebugLight.msg
+│     │  │  ├─ DebugLights.msg
+│     │  │  ├─ Target.msg
+│     │  │  └─ TrackerInfo.msg
+│     │  └─ package.xml
+│     ├─ rm_auto_aim
+│     │  ├─ README.md
+│     │  ├─ armor_detector
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ cmake_modules
+│     │  │  │  └─ FindG2O.cmake
+│     │  │  ├─ docs
+│     │  │  │  ├─ BA.png
+│     │  │  │  ├─ blue.png
+│     │  │  │  ├─ classify.png
+│     │  │  │  ├─ gray_bin.png
+│     │  │  │  ├─ hsv_bin.png
+│     │  │  │  ├─ model.svg
+│     │  │  │  ├─ num_bin.png
+│     │  │  │  ├─ num_raw.png
+│     │  │  │  ├─ num_roi.png
+│     │  │  │  ├─ num_warp.png
+│     │  │  │  ├─ origin1.png
+│     │  │  │  ├─ origin2.png
+│     │  │  │  ├─ pca1.png
+│     │  │  │  ├─ pca2.png
+│     │  │  │  ├─ raw.png
+│     │  │  │  ├─ red.png
+│     │  │  │  └─ test.png
+│     │  │  ├─ include
+│     │  │  │  └─ armor_detector
+│     │  │  │     ├─ armor_detector.hpp
+│     │  │  │     ├─ armor_detector_node.hpp
+│     │  │  │     ├─ armor_pose_estimator.hpp
+│     │  │  │     ├─ ba_solver.hpp
+│     │  │  │     ├─ graph_optimizer.hpp
+│     │  │  │     ├─ light_corner_corrector.hpp
+│     │  │  │     ├─ number_classifier.hpp
+│     │  │  │     └─ types.hpp
+│     │  │  ├─ model
+│     │  │  │  ├─ label.txt
+│     │  │  │  ├─ lenet.onnx
+│     │  │  │  └─ mlp.onnx
+│     │  │  ├─ package.xml
+│     │  │  ├─ src
+│     │  │  │  ├─ armor_detector.cpp
+│     │  │  │  ├─ armor_detector_node.cpp
+│     │  │  │  ├─ armor_pose_estimator.cpp
+│     │  │  │  ├─ ba_solver.cpp
+│     │  │  │  ├─ graph_optimizer.cpp
+│     │  │  │  ├─ light_corner_corrector.cpp
+│     │  │  │  └─ number_classifier.cpp
+│     │  │  └─ test
+│     │  │     └─ test_detector.cpp
+│     │  ├─ armor_detector_test
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ cmake_modules
+│     │  │  │  └─ FindG2O.cmake
+│     │  │  ├─ docs
+│     │  │  │  ├─ BA.png
+│     │  │  │  ├─ blue.png
+│     │  │  │  ├─ classify.png
+│     │  │  │  ├─ gray_bin.png
+│     │  │  │  ├─ hsv_bin.png
+│     │  │  │  ├─ model.svg
+│     │  │  │  ├─ num_bin.png
+│     │  │  │  ├─ num_raw.png
+│     │  │  │  ├─ num_roi.png
+│     │  │  │  ├─ num_warp.png
+│     │  │  │  ├─ origin1.png
+│     │  │  │  ├─ origin2.png
+│     │  │  │  ├─ pca1.png
+│     │  │  │  ├─ pca2.png
+│     │  │  │  ├─ raw.png
+│     │  │  │  ├─ red.png
+│     │  │  │  └─ test.png
+│     │  │  ├─ include
+│     │  │  │  └─ armor_detector
+│     │  │  │     ├─ armor_detector.hpp
+│     │  │  │     ├─ armor_detector_node.hpp
+│     │  │  │     ├─ armor_pose_estimator.hpp
+│     │  │  │     ├─ ba_solver.hpp
+│     │  │  │     ├─ graph_optimizer.hpp
+│     │  │  │     ├─ light_corner_corrector.hpp
+│     │  │  │     └─ types.hpp
+│     │  │  ├─ model
+│     │  │  │  ├─ label.txt
+│     │  │  │  ├─ lenet.onnx
+│     │  │  │  └─ mlp.onnx
+│     │  │  ├─ package.xml
+│     │  │  ├─ src
+│     │  │  │  ├─ armor_detector.cpp
+│     │  │  │  ├─ armor_detector_node.cpp
+│     │  │  │  ├─ armor_pose_estimator.cpp
+│     │  │  │  ├─ ba_solver.cpp
+│     │  │  │  ├─ graph_optimizer.cpp
+│     │  │  │  └─ light_corner_corrector.cpp
+│     │  │  └─ test
+│     │  │     └─ test_detector.cpp
+│     │  ├─ armor_solver
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ docs
+│     │  │  │  └─ Kalman_filter_model.png
+│     │  │  ├─ include
+│     │  │  │  └─ armor_solver
+│     │  │  │     ├─ armor_solver.hpp
+│     │  │  │     ├─ armor_solver_node.hpp
+│     │  │  │     ├─ armor_tracker.hpp
+│     │  │  │     └─ motion_model.hpp
+│     │  │  ├─ package.xml
+│     │  │  └─ src
+│     │  │     ├─ armor_solver.cpp
+│     │  │     ├─ armor_solver_node.cpp
+│     │  │     └─ armor_tracker.cpp
+│     │  ├─ openvino_armor_detector
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ LICENSE
+│     │  │  ├─ cmake_modules
+│     │  │  │  └─ FindG2O.cmake
+│     │  │  ├─ config
+│     │  │  │  └─ armor_detector.yaml
+│     │  │  ├─ include
+│     │  │  │  └─ openvino_armor_detector
+│     │  │  │     ├─ armor_pose_estimator.hpp
+│     │  │  │     ├─ ba_solver.hpp
+│     │  │  │     ├─ graph_optimizer.hpp
+│     │  │  │     ├─ mono_measure_tool.hpp
+│     │  │  │     ├─ openvino_detect_node.hpp
+│     │  │  │     ├─ openvino_detector.hpp
+│     │  │  │     └─ types.hpp
+│     │  │  ├─ launch
+│     │  │  │  └─ armor_detector.launch.py
+│     │  │  ├─ model
+│     │  │  │  ├─ 0708.bin
+│     │  │  │  ├─ 0708.onnx
+│     │  │  │  └─ 0708.xml
+│     │  │  ├─ package.xml
+│     │  │  └─ src
+│     │  │     ├─ armor_pose_estimator.cpp
+│     │  │     ├─ ba_solver.cpp
+│     │  │     ├─ graph_optimizer.cpp
+│     │  │     ├─ mono_measure_tool.cpp
+│     │  │     ├─ openvino_detect_node.cpp
+│     │  │     └─ openvino_detector.cpp
+│     │  └─ rm_auto_aim
+│     │     ├─ CMakeLists.txt
+│     │     └─ package.xml
+│     ├─ rm_bringup
+│     │  ├─ CMakeLists.txt
+│     │  ├─ config
+│     │  │  ├─ camera_info.yaml
+│     │  │  ├─ camera_infonewdame.yaml
+│     │  │  ├─ camera_params.yaml
+│     │  │  ├─ launch_params.yaml
+│     │  │  ├─ node_params
+│     │  │  │  ├─ armor_detector_params.yaml
+│     │  │  │  ├─ armor_solver_params.yaml
+│     │  │  │  ├─ armor_solver_params——heroold.yaml
+│     │  │  │  ├─ camera_driver_params.yaml
+│     │  │  │  ├─ rune_detector_params.yaml
+│     │  │  │  ├─ rune_solver_params.yaml
+│     │  │  │  ├─ serial_driver_params.yaml
+│     │  │  │  ├─ video_player_params.yaml
+│     │  │  │  └─ virtual_serial_params.yaml
+│     │  │  ├─ old2camera_info.yaml
+│     │  │  ├─ old_camera_info.yaml
+│     │  │  └─ oldcamera_info3.yaml
+│     │  ├─ launch
+│     │  │  ├─ bringup.launch.py
+│     │  │  ├─ bringup.launch_hiktest_openvino.py
+│     │  │  ├─ bringup.launch_mvtest.py
+│     │  │  ├─ bringup.launch_mvtest_nonumber.py
+│     │  │  ├─ bringup.launch_mvtest_openvino.py
+│     │  │  └─ bringup_navigation.launch.py
+│     │  └─ package.xml
+│     ├─ rm_hardware_driver
+│     │  ├─ rm_camera_driver
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ include
+│     │  │  │  ├─ daheng
+│     │  │  │  │  ├─ DxImageProc.h
+│     │  │  │  │  └─ GxIAPI.h
+│     │  │  │  └─ rm_camera_driver
+│     │  │  │     ├─ daheng_camera.hpp
+│     │  │  │     └─ recorder.hpp
+│     │  │  ├─ lib
+│     │  │  │  └─ x86_64
+│     │  │  │     ├─ GxGVTL.cti
+│     │  │  │     ├─ GxU3VTL.cti
+│     │  │  │     ├─ libgxiapi.so
+│     │  │  │     └─ libgxiapi.so.1.0.1904.8241
+│     │  │  ├─ package.xml
+│     │  │  ├─ src
+│     │  │  │  ├─ daheng_camera.cpp
+│     │  │  │  ├─ recorder.cpp
+│     │  │  │  └─ video_player.cpp
+│     │  │  └─ test
+│     │  │     └─ TODO
+│     │  ├─ rm_serial_driver
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ include
+│     │  │  │  └─ rm_serial_driver
+│     │  │  │     ├─ fixed_packet.hpp
+│     │  │  │     ├─ fixed_packet_tool.hpp
+│     │  │  │     ├─ protocol
+│     │  │  │     │  ├─ default_protocol.hpp
+│     │  │  │     │  ├─ infantry_protocol.hpp
+│     │  │  │     │  ├─ sentry_protocol.hpp
+│     │  │  │     │  └─ test_protocol.hpp
+│     │  │  │     ├─ protocol.hpp
+│     │  │  │     ├─ protocol_factory.hpp
+│     │  │  │     ├─ serial_driver_node.hpp
+│     │  │  │     ├─ transporter_interface.hpp
+│     │  │  │     └─ uart_transporter.hpp
+│     │  │  ├─ package.xml
+│     │  │  ├─ src
+│     │  │  │  ├─ protocol
+│     │  │  │  │  ├─ default_protocol.cpp
+│     │  │  │  │  ├─ infantry_protocol.cpp
+│     │  │  │  │  ├─ sentry_protocol.cpp
+│     │  │  │  │  └─ test_protocol.cpp
+│     │  │  │  ├─ serial_driver_node.cpp
+│     │  │  │  ├─ transporter_driver
+│     │  │  │  │  └─ uart_transporter.cpp
+│     │  │  │  └─ virtual_serial_node.cpp
+│     │  │  └─ test
+│     │  │     ├─ dummy_transporter.hpp
+│     │  │     └─ test_fixed_packet_tool.cpp
+│     │  ├─ ros2-hik-camera
+│     │  │  ├─ .clang-format
+│     │  │  ├─ .clang-tidy
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ config
+│     │  │  │  ├─ camera_info.yaml
+│     │  │  │  └─ camera_params.yaml
+│     │  │  ├─ hikSDK
+│     │  │  │  ├─ include
+│     │  │  │  │  ├─ CameraParams.h
+│     │  │  │  │  ├─ MvCameraControl.h
+│     │  │  │  │  ├─ MvErrorDefine.h
+│     │  │  │  │  ├─ MvISPErrorDefine.h
+│     │  │  │  │  └─ PixelType.h
+│     │  │  │  └─ lib
+│     │  │  │     ├─ amd64
+│     │  │  │     │  ├─ libFormatConversion.so
+│     │  │  │     │  ├─ libMVRender.so
+│     │  │  │     │  ├─ libMediaProcess.so
+│     │  │  │     │  ├─ libMvCameraControl.so
+│     │  │  │     │  └─ libMvUsb3vTL.so
+│     │  │  │     └─ arm64
+│     │  │  │        ├─ libFormatConversion.so
+│     │  │  │        ├─ libMVRender.so
+│     │  │  │        ├─ libMediaProcess.so
+│     │  │  │        ├─ libMvCameraControl.so
+│     │  │  │        └─ libMvUsb3vTL.so
+│     │  │  ├─ launch
+│     │  │  │  └─ hik_camera.launch.py
+│     │  │  ├─ package.xml
+│     │  │  └─ src
+│     │  │     └─ hik_camera_node.cpp
+│     │  └─ ros2-mindvision-camera
+│     │     ├─ .clang-format
+│     │     ├─ .clang-tidy
+│     │     ├─ CMakeLists.txt
+│     │     ├─ LICENSE
+│     │     ├─ README.md
+│     │     ├─ config
+│     │     │  ├─ camera_info.yaml
+│     │     │  └─ camera_params.yaml
+│     │     ├─ docs
+│     │     │  └─ rqt.png
+│     │     ├─ launch
+│     │     │  └─ mv_launch.py
+│     │     ├─ mvsdk
+│     │     │  ├─ include
+│     │     │  │  ├─ CameraApi.h
+│     │     │  │  ├─ CameraDefine.h
+│     │     │  │  └─ CameraStatus.h
+│     │     │  └─ lib
+│     │     │     ├─ amd64
+│     │     │     │  └─ libMVSDK.so
+│     │     │     └─ arm64
+│     │     │        └─ libMVSDK.so
+│     │     ├─ package.xml
+│     │     └─ src
+│     │        └─ mv_camera_node.cpp
+│     ├─ rm_interfaces
+│     │  ├─ CMakeLists.txt
+│     │  ├─ msg
+│     │  │  ├─ Armor.msg
+│     │  │  ├─ Armors.msg
+│     │  │  ├─ ChassisCmd.msg
+│     │  │  ├─ DebugArmor.msg
+│     │  │  ├─ DebugArmors.msg
+│     │  │  ├─ DebugLight.msg
+│     │  │  ├─ DebugLights.msg
+│     │  │  ├─ DebugRuneAngle.msg
+│     │  │  ├─ GimbalCmd.msg
+│     │  │  ├─ JudgeSystemData.msg
+│     │  │  ├─ Measurement.msg
+│     │  │  ├─ OperatorCommand.msg
+│     │  │  ├─ Point2d.msg
+│     │  │  ├─ RuneTarget.msg
+│     │  │  ├─ SerialReceiveData.msg
+│     │  │  └─ Target.msg
+│     │  ├─ package.xml
+│     │  └─ srv
+│     │     └─ SetMode.srv
+│     ├─ rm_robot_description
+│     │  ├─ CMakeLists.txt
+│     │  ├─ LICENSE
+│     │  ├─ README.md
+│     │  ├─ docs
+│     │  │  └─ rm_vision.svg
+│     │  ├─ package.xml
+│     │  └─ urdf
+│     │     ├─ rm_gimbal.urdf.xacro
+│     │     └─ sentry.urdf.xacro
+│     ├─ rm_rune
+│     │  ├─ README.md
+│     │  ├─ rm_rune
+│     │  │  ├─ CMakeLists.txt
+│     │  │  └─ package.xml
+│     │  ├─ rune_detector
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ docs
+│     │  │  │  └─ test.png
+│     │  │  ├─ include
+│     │  │  │  └─ rune_detector
+│     │  │  │     ├─ rune_detector.hpp
+│     │  │  │     ├─ rune_detector_node.hpp
+│     │  │  │     └─ types.hpp
+│     │  │  ├─ model
+│     │  │  │  ├─ yolox_rune.bin
+│     │  │  │  ├─ yolox_rune.onnx
+│     │  │  │  ├─ yolox_rune.xml
+│     │  │  │  ├─ yolox_rune_3.6m.bin
+│     │  │  │  ├─ yolox_rune_3.6m.onnx
+│     │  │  │  └─ yolox_rune_3.6m.xml
+│     │  │  ├─ package.xml
+│     │  │  ├─ src
+│     │  │  │  ├─ rune_detector.cpp
+│     │  │  │  └─ rune_detector_node.cpp
+│     │  │  └─ test
+│     │  │     ├─ test_detector.cpp
+│     │  │     └─ test_node_startup.cpp
+│     │  └─ rune_solver
+│     │     ├─ CMakeLists.txt
+│     │     ├─ README.md
+│     │     ├─ include
+│     │     │  └─ rune_solver
+│     │     │     ├─ curve_fitter.hpp
+│     │     │     ├─ motion_model.hpp
+│     │     │     ├─ rune_solver.hpp
+│     │     │     ├─ rune_solver_node.hpp
+│     │     │     └─ types.hpp
+│     │     ├─ package.xml
+│     │     ├─ src
+│     │     │  ├─ curve_fitter.cpp
+│     │     │  ├─ rune_solver.cpp
+│     │     │  └─ rune_solver_node.cpp
+│     │     └─ test
+│     │        └─ test_node_startup.cpp
+│     ├─ rm_upstart
+│     │  ├─ README.md
+│     │  ├─ register_service.sh
+│     │  ├─ rm_clean_up.sh
+│     │  └─ rm_watch_dog.sh
+│     ├─ rm_utils
+│     │  ├─ CMakeLists.txt
+│     │  ├─ README.md
+│     │  ├─ include
+│     │  │  └─ rm_utils
+│     │  │     ├─ assert.hpp
+│     │  │     ├─ common.hpp
+│     │  │     ├─ heartbeat.hpp
+│     │  │     ├─ logger
+│     │  │     │  ├─ README.md
+│     │  │     │  ├─ exception.hpp
+│     │  │     │  ├─ impl
+│     │  │     │  │  ├─ global_mutex.hpp
+│     │  │     │  │  ├─ logger_impl.hpp
+│     │  │     │  │  └─ writer.hpp
+│     │  │     │  ├─ log.hpp
+│     │  │     │  ├─ logger_pool.hpp
+│     │  │     │  └─ types.hpp
+│     │  │     ├─ math
+│     │  │     │  ├─ extended_kalman_filter.hpp
+│     │  │     │  ├─ manual_compensator.hpp
+│     │  │     │  ├─ particle_filter.hpp
+│     │  │     │  ├─ pnp_solver.hpp
+│     │  │     │  ├─ trajectory_compensator.hpp
+│     │  │     │  └─ utils.hpp
+│     │  │     └─ url_resolver.hpp
+│     │  ├─ package.xml
+│     │  └─ src
+│     │     ├─ heartbeat.cpp
+│     │     ├─ logger
+│     │     │  ├─ logger_impl.cpp
+│     │     │  ├─ logger_pool.cpp
+│     │     │  └─ writer.cpp
+│     │     ├─ math
+│     │     │  ├─ extended_kalman_filter.cpp
+│     │     │  ├─ manual_compensator.cpp
+│     │     │  ├─ particle_filter.cpp
+│     │     │  ├─ pnp_solver.cpp
+│     │     │  ├─ trajectory_compensator.cpp
+│     │     │  └─ utils.cpp
+│     │     └─ url_resolver.cpp
+│     ├─ rmoss_core
+│     │  ├─ CMakeLists.txt
+│     │  └─ package.xml
+│     ├─ rmoss_interfaces
+│     │  ├─ CMakeLists.txt
+│     │  ├─ LICENSE
+│     │  ├─ README.md
+│     │  ├─ msg
+│     │  │  ├─ ChassisCmd.msg
+│     │  │  ├─ Gimbal.msg
+│     │  │  ├─ GimbalCmd.msg
+│     │  │  ├─ ShootCmd.msg
+│     │  │  └─ referee
+│     │  │     ├─ GameStatus.msg
+│     │  │     ├─ RefereeCmd.msg
+│     │  │     └─ RobotStatus.msg
+│     │  ├─ package.xml
+│     │  └─ srv
+│     │     ├─ ControlTask.srv
+│     │     ├─ GetCameraInfo.srv
+│     │     ├─ GetMode.srv
+│     │     ├─ GetTaskStatus.srv
+│     │     ├─ SetColor.srv
+│     │     └─ SetMode.srv
+│     ├─ rmoss_projectile_motion
+│     │  ├─ CMakeLists.txt
+│     │  ├─ README.md
+│     │  ├─ include
+│     │  │  └─ rmoss_projectile_motion
+│     │  │     ├─ gaf_projectile_solver.hpp
+│     │  │     ├─ gimbal_transform_tool.hpp
+│     │  │     ├─ gravity_projectile_solver.hpp
+│     │  │     ├─ iterative_projectile_tool.hpp
+│     │  │     └─ projectile_solver_interface.hpp
+│     │  ├─ package.xml
+│     │  └─ src
+│     │     ├─ gaf_projectile_solver.cpp
+│     │     ├─ gimbal_transform_tool.cpp
+│     │     ├─ gravity_projectile_solver.cpp
+│     │     └─ iterative_projectile_tool.cpp
+│     └─ rmoss_util
+│        ├─ CMakeLists.txt
+│        ├─ README.md
+│        ├─ include
+│        │  └─ rmoss_util
+│        │     ├─ debug.hpp
+│        │     ├─ image_utils.hpp
+│        │     ├─ mono_measure_tool.hpp
+│        │     ├─ task_manager.hpp
+│        │     ├─ time_utils.hpp
+│        │     └─ url_resolver.hpp
+│        ├─ package.xml
+│        ├─ src
+│        │  ├─ debug.cpp
+│        │  ├─ image_utils.cpp
+│        │  ├─ mono_measure_tool.cpp
+│        │  ├─ task_manager.cpp
+│        │  ├─ time_utils.cpp
+│        │  └─ url_resolver.cpp
+│        └─ test
+│           ├─ CMakeLists.txt
+│           └─ test_url_resolve.cpp
+├─ README.md
+├─ Utils
+│  ├─ CH341SER_LINUX.ZIP
+│  ├─ FindTBB_new.cmake
+│  ├─ Sophus-1.22.10.zip
+│  ├─ ceres-solver-2.0.0.zip
+│  ├─ fmt-10.2.1.zip
+│  ├─ rules
+│  │  ├─ (Deprecated)ttyusb.rules
+│  │  ├─ camera.rules
+│  │  └─ serial.rules
+│  ├─ spdlog-1.14.0.zip
+│  ├─ start
+│  │  ├─ autoaim_begin.sh
+│  │  ├─ autoaim_begin1.sh
+│  │  ├─ record.sh
+│  │  └─ 需要添加到Gnome开机自启动配置里面的命令
+│  └─ z_g2o-20230806_git.zip
+└─ install_and_configure.sh
+
+```
+```
+SPR-Vision-2026
+├─ Main_ws
+│  └─ src
+│     ├─ auto_aim_interfaces
+│     │  ├─ CMakeLists.txt
+│     │  ├─ msg
+│     │  │  ├─ Armor.msg
+│     │  │  ├─ Armors.msg
+│     │  │  ├─ DebugArmor.msg
+│     │  │  ├─ DebugArmors.msg
+│     │  │  ├─ DebugLight.msg
+│     │  │  ├─ DebugLights.msg
+│     │  │  ├─ Target.msg
+│     │  │  └─ TrackerInfo.msg
+│     │  └─ package.xml
+│     ├─ rm_auto_aim
+│     │  ├─ README.md
+│     │  ├─ armor_detector
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ cmake_modules
+│     │  │  │  └─ FindG2O.cmake
+│     │  │  ├─ docs
+│     │  │  │  ├─ BA.png
+│     │  │  │  ├─ blue.png
+│     │  │  │  ├─ classify.png
+│     │  │  │  ├─ gray_bin.png
+│     │  │  │  ├─ hsv_bin.png
+│     │  │  │  ├─ model.svg
+│     │  │  │  ├─ num_bin.png
+│     │  │  │  ├─ num_raw.png
+│     │  │  │  ├─ num_roi.png
+│     │  │  │  ├─ num_warp.png
+│     │  │  │  ├─ origin1.png
+│     │  │  │  ├─ origin2.png
+│     │  │  │  ├─ pca1.png
+│     │  │  │  ├─ pca2.png
+│     │  │  │  ├─ raw.png
+│     │  │  │  ├─ red.png
+│     │  │  │  └─ test.png
+│     │  │  ├─ include
+│     │  │  │  └─ armor_detector
+│     │  │  │     ├─ armor_detector.hpp
+│     │  │  │     ├─ armor_detector_node.hpp
+│     │  │  │     ├─ armor_pose_estimator.hpp
+│     │  │  │     ├─ ba_solver.hpp
+│     │  │  │     ├─ graph_optimizer.hpp
+│     │  │  │     ├─ light_corner_corrector.hpp
+│     │  │  │     ├─ number_classifier.hpp
+│     │  │  │     └─ types.hpp
+│     │  │  ├─ model
+│     │  │  │  ├─ label.txt
+│     │  │  │  ├─ lenet.onnx
+│     │  │  │  └─ mlp.onnx
+│     │  │  ├─ package.xml
+│     │  │  ├─ src
+│     │  │  │  ├─ armor_detector.cpp
+│     │  │  │  ├─ armor_detector_node.cpp
+│     │  │  │  ├─ armor_pose_estimator.cpp
+│     │  │  │  ├─ ba_solver.cpp
+│     │  │  │  ├─ graph_optimizer.cpp
+│     │  │  │  ├─ light_corner_corrector.cpp
+│     │  │  │  └─ number_classifier.cpp
+│     │  │  └─ test
+│     │  │     └─ test_detector.cpp
+│     │  ├─ armor_detector_test
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ cmake_modules
+│     │  │  │  └─ FindG2O.cmake
+│     │  │  ├─ docs
+│     │  │  │  ├─ BA.png
+│     │  │  │  ├─ blue.png
+│     │  │  │  ├─ classify.png
+│     │  │  │  ├─ gray_bin.png
+│     │  │  │  ├─ hsv_bin.png
+│     │  │  │  ├─ model.svg
+│     │  │  │  ├─ num_bin.png
+│     │  │  │  ├─ num_raw.png
+│     │  │  │  ├─ num_roi.png
+│     │  │  │  ├─ num_warp.png
+│     │  │  │  ├─ origin1.png
+│     │  │  │  ├─ origin2.png
+│     │  │  │  ├─ pca1.png
+│     │  │  │  ├─ pca2.png
+│     │  │  │  ├─ raw.png
+│     │  │  │  ├─ red.png
+│     │  │  │  └─ test.png
+│     │  │  ├─ include
+│     │  │  │  └─ armor_detector
+│     │  │  │     ├─ armor_detector.hpp
+│     │  │  │     ├─ armor_detector_node.hpp
+│     │  │  │     ├─ armor_pose_estimator.hpp
+│     │  │  │     ├─ ba_solver.hpp
+│     │  │  │     ├─ graph_optimizer.hpp
+│     │  │  │     ├─ light_corner_corrector.hpp
+│     │  │  │     └─ types.hpp
+│     │  │  ├─ model
+│     │  │  │  ├─ label.txt
+│     │  │  │  ├─ lenet.onnx
+│     │  │  │  └─ mlp.onnx
+│     │  │  ├─ package.xml
+│     │  │  ├─ src
+│     │  │  │  ├─ armor_detector.cpp
+│     │  │  │  ├─ armor_detector_node.cpp
+│     │  │  │  ├─ armor_pose_estimator.cpp
+│     │  │  │  ├─ ba_solver.cpp
+│     │  │  │  ├─ graph_optimizer.cpp
+│     │  │  │  └─ light_corner_corrector.cpp
+│     │  │  └─ test
+│     │  │     └─ test_detector.cpp
+│     │  ├─ armor_solver
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ docs
+│     │  │  │  └─ Kalman_filter_model.png
+│     │  │  ├─ include
+│     │  │  │  └─ armor_solver
+│     │  │  │     ├─ armor_solver.hpp
+│     │  │  │     ├─ armor_solver_node.hpp
+│     │  │  │     ├─ armor_tracker.hpp
+│     │  │  │     └─ motion_model.hpp
+│     │  │  ├─ package.xml
+│     │  │  └─ src
+│     │  │     ├─ armor_solver.cpp
+│     │  │     ├─ armor_solver_node.cpp
+│     │  │     └─ armor_tracker.cpp
+│     │  ├─ openvino_armor_detector
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ LICENSE
+│     │  │  ├─ cmake_modules
+│     │  │  │  └─ FindG2O.cmake
+│     │  │  ├─ config
+│     │  │  │  └─ armor_detector.yaml
+│     │  │  ├─ include
+│     │  │  │  └─ openvino_armor_detector
+│     │  │  │     ├─ armor_pose_estimator.hpp
+│     │  │  │     ├─ ba_solver.hpp
+│     │  │  │     ├─ graph_optimizer.hpp
+│     │  │  │     ├─ mono_measure_tool.hpp
+│     │  │  │     ├─ openvino_detect_node.hpp
+│     │  │  │     ├─ openvino_detector.hpp
+│     │  │  │     └─ types.hpp
+│     │  │  ├─ launch
+│     │  │  │  └─ armor_detector.launch.py
+│     │  │  ├─ model
+│     │  │  │  ├─ 0708.bin
+│     │  │  │  ├─ 0708.onnx
+│     │  │  │  └─ 0708.xml
+│     │  │  ├─ package.xml
+│     │  │  └─ src
+│     │  │     ├─ armor_pose_estimator.cpp
+│     │  │     ├─ ba_solver.cpp
+│     │  │     ├─ graph_optimizer.cpp
+│     │  │     ├─ mono_measure_tool.cpp
+│     │  │     ├─ openvino_detect_node.cpp
+│     │  │     └─ openvino_detector.cpp
+│     │  └─ rm_auto_aim
+│     │     ├─ CMakeLists.txt
+│     │     └─ package.xml
+│     ├─ rm_bringup
+│     │  ├─ CMakeLists.txt
+│     │  ├─ config
+│     │  │  ├─ camera_info.yaml
+│     │  │  ├─ camera_infonewdame.yaml
+│     │  │  ├─ camera_params.yaml
+│     │  │  ├─ launch_params.yaml
+│     │  │  ├─ node_params
+│     │  │  │  ├─ armor_detector_params.yaml
+│     │  │  │  ├─ armor_solver_params.yaml
+│     │  │  │  ├─ armor_solver_params——heroold.yaml
+│     │  │  │  ├─ camera_driver_params.yaml
+│     │  │  │  ├─ rune_detector_params.yaml
+│     │  │  │  ├─ rune_solver_params.yaml
+│     │  │  │  ├─ serial_driver_params.yaml
+│     │  │  │  ├─ video_player_params.yaml
+│     │  │  │  └─ virtual_serial_params.yaml
+│     │  │  ├─ old2camera_info.yaml
+│     │  │  ├─ old_camera_info.yaml
+│     │  │  └─ oldcamera_info3.yaml
+│     │  ├─ launch
+│     │  │  ├─ bringup.launch.py
+│     │  │  ├─ bringup.launch_hiktest_openvino.py
+│     │  │  ├─ bringup.launch_mvtest.py
+│     │  │  ├─ bringup.launch_mvtest_nonumber.py
+│     │  │  ├─ bringup.launch_mvtest_openvino.py
+│     │  │  └─ bringup_navigation.launch.py
+│     │  └─ package.xml
+│     ├─ rm_hardware_driver
+│     │  ├─ rm_camera_driver
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ include
+│     │  │  │  ├─ daheng
+│     │  │  │  │  ├─ DxImageProc.h
+│     │  │  │  │  └─ GxIAPI.h
+│     │  │  │  └─ rm_camera_driver
+│     │  │  │     ├─ daheng_camera.hpp
+│     │  │  │     └─ recorder.hpp
+│     │  │  ├─ lib
+│     │  │  │  └─ x86_64
+│     │  │  │     ├─ GxGVTL.cti
+│     │  │  │     ├─ GxU3VTL.cti
+│     │  │  │     ├─ libgxiapi.so
+│     │  │  │     └─ libgxiapi.so.1.0.1904.8241
+│     │  │  ├─ package.xml
+│     │  │  ├─ src
+│     │  │  │  ├─ daheng_camera.cpp
+│     │  │  │  ├─ recorder.cpp
+│     │  │  │  └─ video_player.cpp
+│     │  │  └─ test
+│     │  │     └─ TODO
+│     │  ├─ rm_serial_driver
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ include
+│     │  │  │  └─ rm_serial_driver
+│     │  │  │     ├─ fixed_packet.hpp
+│     │  │  │     ├─ fixed_packet_tool.hpp
+│     │  │  │     ├─ protocol
+│     │  │  │     │  ├─ default_protocol.hpp
+│     │  │  │     │  ├─ infantry_protocol.hpp
+│     │  │  │     │  ├─ sentry_protocol.hpp
+│     │  │  │     │  └─ test_protocol.hpp
+│     │  │  │     ├─ protocol.hpp
+│     │  │  │     ├─ protocol_factory.hpp
+│     │  │  │     ├─ serial_driver_node.hpp
+│     │  │  │     ├─ transporter_interface.hpp
+│     │  │  │     └─ uart_transporter.hpp
+│     │  │  ├─ package.xml
+│     │  │  ├─ src
+│     │  │  │  ├─ protocol
+│     │  │  │  │  ├─ default_protocol.cpp
+│     │  │  │  │  ├─ infantry_protocol.cpp
+│     │  │  │  │  ├─ sentry_protocol.cpp
+│     │  │  │  │  └─ test_protocol.cpp
+│     │  │  │  ├─ serial_driver_node.cpp
+│     │  │  │  ├─ transporter_driver
+│     │  │  │  │  └─ uart_transporter.cpp
+│     │  │  │  └─ virtual_serial_node.cpp
+│     │  │  └─ test
+│     │  │     ├─ dummy_transporter.hpp
+│     │  │     └─ test_fixed_packet_tool.cpp
+│     │  ├─ ros2-hik-camera
+│     │  │  ├─ .clang-format
+│     │  │  ├─ .clang-tidy
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ config
+│     │  │  │  ├─ camera_info.yaml
+│     │  │  │  └─ camera_params.yaml
+│     │  │  ├─ hikSDK
+│     │  │  │  ├─ include
+│     │  │  │  │  ├─ CameraParams.h
+│     │  │  │  │  ├─ MvCameraControl.h
+│     │  │  │  │  ├─ MvErrorDefine.h
+│     │  │  │  │  ├─ MvISPErrorDefine.h
+│     │  │  │  │  └─ PixelType.h
+│     │  │  │  └─ lib
+│     │  │  │     ├─ amd64
+│     │  │  │     │  ├─ libFormatConversion.so
+│     │  │  │     │  ├─ libMVRender.so
+│     │  │  │     │  ├─ libMediaProcess.so
+│     │  │  │     │  ├─ libMvCameraControl.so
+│     │  │  │     │  └─ libMvUsb3vTL.so
+│     │  │  │     └─ arm64
+│     │  │  │        ├─ libFormatConversion.so
+│     │  │  │        ├─ libMVRender.so
+│     │  │  │        ├─ libMediaProcess.so
+│     │  │  │        ├─ libMvCameraControl.so
+│     │  │  │        └─ libMvUsb3vTL.so
+│     │  │  ├─ launch
+│     │  │  │  └─ hik_camera.launch.py
+│     │  │  ├─ package.xml
+│     │  │  └─ src
+│     │  │     └─ hik_camera_node.cpp
+│     │  └─ ros2-mindvision-camera
+│     │     ├─ .clang-format
+│     │     ├─ .clang-tidy
+│     │     ├─ CMakeLists.txt
+│     │     ├─ LICENSE
+│     │     ├─ README.md
+│     │     ├─ config
+│     │     │  ├─ camera_info.yaml
+│     │     │  └─ camera_params.yaml
+│     │     ├─ docs
+│     │     │  └─ rqt.png
+│     │     ├─ launch
+│     │     │  └─ mv_launch.py
+│     │     ├─ mvsdk
+│     │     │  ├─ include
+│     │     │  │  ├─ CameraApi.h
+│     │     │  │  ├─ CameraDefine.h
+│     │     │  │  └─ CameraStatus.h
+│     │     │  └─ lib
+│     │     │     ├─ amd64
+│     │     │     │  └─ libMVSDK.so
+│     │     │     └─ arm64
+│     │     │        └─ libMVSDK.so
+│     │     ├─ package.xml
+│     │     └─ src
+│     │        └─ mv_camera_node.cpp
+│     ├─ rm_interfaces
+│     │  ├─ CMakeLists.txt
+│     │  ├─ msg
+│     │  │  ├─ Armor.msg
+│     │  │  ├─ Armors.msg
+│     │  │  ├─ ChassisCmd.msg
+│     │  │  ├─ DebugArmor.msg
+│     │  │  ├─ DebugArmors.msg
+│     │  │  ├─ DebugLight.msg
+│     │  │  ├─ DebugLights.msg
+│     │  │  ├─ DebugRuneAngle.msg
+│     │  │  ├─ GimbalCmd.msg
+│     │  │  ├─ JudgeSystemData.msg
+│     │  │  ├─ Measurement.msg
+│     │  │  ├─ OperatorCommand.msg
+│     │  │  ├─ Point2d.msg
+│     │  │  ├─ RuneTarget.msg
+│     │  │  ├─ SerialReceiveData.msg
+│     │  │  └─ Target.msg
+│     │  ├─ package.xml
+│     │  └─ srv
+│     │     └─ SetMode.srv
+│     ├─ rm_robot_description
+│     │  ├─ CMakeLists.txt
+│     │  ├─ LICENSE
+│     │  ├─ README.md
+│     │  ├─ docs
+│     │  │  └─ rm_vision.svg
+│     │  ├─ package.xml
+│     │  └─ urdf
+│     │     ├─ rm_gimbal.urdf.xacro
+│     │     └─ sentry.urdf.xacro
+│     ├─ rm_rune
+│     │  ├─ README.md
+│     │  ├─ rm_rune
+│     │  │  ├─ CMakeLists.txt
+│     │  │  └─ package.xml
+│     │  ├─ rune_detector
+│     │  │  ├─ CMakeLists.txt
+│     │  │  ├─ README.md
+│     │  │  ├─ docs
+│     │  │  │  └─ test.png
+│     │  │  ├─ include
+│     │  │  │  └─ rune_detector
+│     │  │  │     ├─ rune_detector.hpp
+│     │  │  │     ├─ rune_detector_node.hpp
+│     │  │  │     └─ types.hpp
+│     │  │  ├─ model
+│     │  │  │  ├─ yolox_rune.bin
+│     │  │  │  ├─ yolox_rune.onnx
+│     │  │  │  ├─ yolox_rune.xml
+│     │  │  │  ├─ yolox_rune_3.6m.bin
+│     │  │  │  ├─ yolox_rune_3.6m.onnx
+│     │  │  │  └─ yolox_rune_3.6m.xml
+│     │  │  ├─ package.xml
+│     │  │  ├─ src
+│     │  │  │  ├─ rune_detector.cpp
+│     │  │  │  └─ rune_detector_node.cpp
+│     │  │  └─ test
+│     │  │     ├─ test_detector.cpp
+│     │  │     └─ test_node_startup.cpp
+│     │  └─ rune_solver
+│     │     ├─ CMakeLists.txt
+│     │     ├─ README.md
+│     │     ├─ include
+│     │     │  └─ rune_solver
+│     │     │     ├─ curve_fitter.hpp
+│     │     │     ├─ motion_model.hpp
+│     │     │     ├─ rune_solver.hpp
+│     │     │     ├─ rune_solver_node.hpp
+│     │     │     └─ types.hpp
+│     │     ├─ package.xml
+│     │     ├─ src
+│     │     │  ├─ curve_fitter.cpp
+│     │     │  ├─ rune_solver.cpp
+│     │     │  └─ rune_solver_node.cpp
+│     │     └─ test
+│     │        └─ test_node_startup.cpp
+│     ├─ rm_upstart
+│     │  ├─ README.md
+│     │  ├─ register_service.sh
+│     │  ├─ rm_clean_up.sh
+│     │  └─ rm_watch_dog.sh
+│     ├─ rm_utils
+│     │  ├─ CMakeLists.txt
+│     │  ├─ README.md
+│     │  ├─ include
+│     │  │  └─ rm_utils
+│     │  │     ├─ assert.hpp
+│     │  │     ├─ common.hpp
+│     │  │     ├─ heartbeat.hpp
+│     │  │     ├─ logger
+│     │  │     │  ├─ README.md
+│     │  │     │  ├─ exception.hpp
+│     │  │     │  ├─ impl
+│     │  │     │  │  ├─ global_mutex.hpp
+│     │  │     │  │  ├─ logger_impl.hpp
+│     │  │     │  │  └─ writer.hpp
+│     │  │     │  ├─ log.hpp
+│     │  │     │  ├─ logger_pool.hpp
+│     │  │     │  └─ types.hpp
+│     │  │     ├─ math
+│     │  │     │  ├─ extended_kalman_filter.hpp
+│     │  │     │  ├─ manual_compensator.hpp
+│     │  │     │  ├─ particle_filter.hpp
+│     │  │     │  ├─ pnp_solver.hpp
+│     │  │     │  ├─ trajectory_compensator.hpp
+│     │  │     │  └─ utils.hpp
+│     │  │     └─ url_resolver.hpp
+│     │  ├─ package.xml
+│     │  └─ src
+│     │     ├─ heartbeat.cpp
+│     │     ├─ logger
+│     │     │  ├─ logger_impl.cpp
+│     │     │  ├─ logger_pool.cpp
+│     │     │  └─ writer.cpp
+│     │     ├─ math
+│     │     │  ├─ extended_kalman_filter.cpp
+│     │     │  ├─ manual_compensator.cpp
+│     │     │  ├─ particle_filter.cpp
+│     │     │  ├─ pnp_solver.cpp
+│     │     │  ├─ trajectory_compensator.cpp
+│     │     │  └─ utils.cpp
+│     │     └─ url_resolver.cpp
+│     ├─ rmoss_core
+│     │  ├─ CMakeLists.txt
+│     │  └─ package.xml
+│     ├─ rmoss_interfaces
+│     │  ├─ CMakeLists.txt
+│     │  ├─ LICENSE
+│     │  ├─ README.md
+│     │  ├─ msg
+│     │  │  ├─ ChassisCmd.msg
+│     │  │  ├─ Gimbal.msg
+│     │  │  ├─ GimbalCmd.msg
+│     │  │  ├─ ShootCmd.msg
+│     │  │  └─ referee
+│     │  │     ├─ GameStatus.msg
+│     │  │     ├─ RefereeCmd.msg
+│     │  │     └─ RobotStatus.msg
+│     │  ├─ package.xml
+│     │  └─ srv
+│     │     ├─ ControlTask.srv
+│     │     ├─ GetCameraInfo.srv
+│     │     ├─ GetMode.srv
+│     │     ├─ GetTaskStatus.srv
+│     │     ├─ SetColor.srv
+│     │     └─ SetMode.srv
+│     ├─ rmoss_projectile_motion
+│     │  ├─ CMakeLists.txt
+│     │  ├─ README.md
+│     │  ├─ include
+│     │  │  └─ rmoss_projectile_motion
+│     │  │     ├─ gaf_projectile_solver.hpp
+│     │  │     ├─ gimbal_transform_tool.hpp
+│     │  │     ├─ gravity_projectile_solver.hpp
+│     │  │     ├─ iterative_projectile_tool.hpp
+│     │  │     └─ projectile_solver_interface.hpp
+│     │  ├─ package.xml
+│     │  └─ src
+│     │     ├─ gaf_projectile_solver.cpp
+│     │     ├─ gimbal_transform_tool.cpp
+│     │     ├─ gravity_projectile_solver.cpp
+│     │     └─ iterative_projectile_tool.cpp
+│     └─ rmoss_util
+│        ├─ CMakeLists.txt
+│        ├─ README.md
+│        ├─ include
+│        │  └─ rmoss_util
+│        │     ├─ debug.hpp
+│        │     ├─ image_utils.hpp
+│        │     ├─ mono_measure_tool.hpp
+│        │     ├─ task_manager.hpp
+│        │     ├─ time_utils.hpp
+│        │     └─ url_resolver.hpp
+│        ├─ package.xml
+│        ├─ src
+│        │  ├─ debug.cpp
+│        │  ├─ image_utils.cpp
+│        │  ├─ mono_measure_tool.cpp
+│        │  ├─ task_manager.cpp
+│        │  ├─ time_utils.cpp
+│        │  └─ url_resolver.cpp
+│        └─ test
+│           ├─ CMakeLists.txt
+│           └─ test_url_resolve.cpp
+├─ README.md
+├─ Utils
+│  ├─ CH341SER_LINUX.ZIP
+│  ├─ FindTBB_new.cmake
+│  ├─ Sophus-1.22.10.zip
+│  ├─ ceres-solver-2.0.0.zip
+│  ├─ fmt-10.2.1.zip
+│  ├─ rules
+│  │  ├─ (Deprecated)ttyusb.rules
+│  │  ├─ camera.rules
+│  │  └─ serial.rules
+│  ├─ spdlog-1.14.0.zip
+│  ├─ start
+│  │  ├─ autoaim_begin.sh
+│  │  ├─ autoaim_begin1.sh
+│  │  ├─ record.sh
+│  │  └─ 需要添加到Gnome开机自启动配置里面的命令
+│  └─ z_g2o-20230806_git.zip
+└─ install_and_configure.sh
+
+```
