@@ -1,21 +1,18 @@
 #!/bin/bash
 
 # 提示用户输入sudo密码
-echo "This script requires sudo privileges. Please enter your password:"
+echo "[请求sudo权限]"
 sudo -v
 
 cd Utils
 
-# 检查sudo是否成功
 if [ $? -ne 0 ]; then
-    echo "Failed to obtain sudo privileges. Exiting."
+    echo "[请求sudo权限失败]"
     exit 1
 fi
 
-# 更新和升级系统包
+echo "[启动apt更新]"
 sudo apt update && sudo apt upgrade -y
-
-# 补全安装依赖库并解决冲突·
 sudo apt-get install -y unzip
 sudo apt-get install -y ros-humble-image-transport-plugins
 sudo apt-get install -y ros-humble-asio-cmake-module
@@ -26,7 +23,20 @@ sudo apt-get install -y libgoogle-glog-dev
 sudo apt-get install -y libmetis-dev
 sudo apt-get install -y libsuitesparse-dev
 sudo apt-get remove -y brltty
+sudo apt install ros-humble-camera-info-manager
+sudo apt install ros-humble-camera-info-manager-dbgsym
+echo "[apt更新完成]"
 
+echo "[开始调整swap分区大小]"
+sudo swapoff /swapfile
+sudo rm /swapfile
+sudo fallocate -l 40G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo "[swap分区大小调整完成]"
+
+echo "[开始安装依赖]"
 # 遍历当前目录下的所有zip文件
 for ZIP_FILE in *.zip; do
     # 检查是否存在zip文件
@@ -39,7 +49,7 @@ for ZIP_FILE in *.zip; do
         # 替换cere的cmake里面的FindTBB
         if [[ "${ZIP_FILE%.zip}" == "ceres-solver-2.0.0" ]]; then
             echo "change FindTBB"
-            cp ../FindTBB_new.cmake ./FindTBB.cmake
+            cp ../FindTBB_new.cmake ./cmake/FindTBB.cmake
         fi
 
         # 创建build目录并进入
@@ -57,10 +67,19 @@ for ZIP_FILE in *.zip; do
         echo "No zip files found in the current directory."
     fi
 done
+echo "[依赖安装完成]"
 
-# 复制规则文件到/etc/udev/rules.d/
+echo "[开始添加udev规则]"
 sudo cp ./rules/camera.rules /etc/udev/rules.d/
 sudo cp ./rules/serial.rules /etc/udev/rules.d/
 
-# 重新加载udev规则
 sudo udevadm control --reload-rules && sudo udevadm trigger
+echo "[udev规则添加完成]"
+
+echo "[开始测试编译工作空间]"
+cd ..
+cd Main_ws
+colcon build --symlink-install --parallel-workers 4
+echo "[编译工作空间完成]"
+
+echo "[脚本运行完毕]"
