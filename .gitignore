@@ -4,6 +4,7 @@ Main_ws/build/**
 Main_ws/install/**
 Main_ws/log/**
 Main_ws/.cache/**
+Main_ws/MvSdkLog/**
 utils/libs/ceres-solver-2.0.0
 utils/libs/z_g2o-20230806_git
 utils/libs/fmt-10.2.1
