@@ -21,7 +21,7 @@ sudo apt install ros-humble-foxglove-bridge
 sudo apt install ros-humble-serial-driver
 ```
 
-## 3.使用一键脚本部署
+## 3.使用一键脚本部署-n个愿望一次满足！
 ```
 chmod +x install_and_configure.sh
 ./install_and_configure.sh
@@ -83,7 +83,6 @@ Plugins->Configurations->Dynamic Reconfigure
 若没找到话题和节点记得点刷新
 
 ### 标定部分
-
 安装
 ```
 sudo apt install ros-humble-camera-calibration
@@ -97,12 +96,12 @@ ros2 run camera_calibration cameracalibrator --size 7x10 --square 0.03 image:=/i
 计算完成后点击Save，结果文件位于/tmp/calibrationdata.tar.gz
 
 ## 6. 单独启动识别节点调试
-
+```
 ros2 run armor\_detector armor\_detector\_node
-
+```
 rqt选择/armor\_detector节点配置，打开debug选项，可在左侧image view看到/detector/result\_img
 
-调整相机对焦和光圈，使其能识别出装甲板且置信度稳定在100%
+调整相机对焦和光圈，使其能识别出装甲板且置信度稳定在100%左右
 
 ## 7.串口协议通信调试
 所有的数据包均统一为16位的FixPacket，其中帧头0xFF，帧尾0xFE；

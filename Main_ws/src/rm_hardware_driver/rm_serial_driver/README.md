@@ -1,6 +1,6 @@
 # rm_serial_driver
 
-FYT视觉24赛季串口通信模块
+串口通信模块
 
 ## fyt::SerialDriverNode
 
