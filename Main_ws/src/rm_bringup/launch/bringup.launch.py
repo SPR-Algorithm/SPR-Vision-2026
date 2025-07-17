@@ -39,7 +39,7 @@ def generate_launch_description():
     )
 
     def get_params(name):
-        return os.path.join(get_package_share_directory('rm_bringup'), 'config', 'node_params', f'{name}_params.yaml')
+        return os.path.join(get_package_share_directory('rm_bringup'), 'config', f'{name}_params.yaml')
 
     # ================== 修改部分开始 ================== #
     # 摄像头节点（转换为常规节点）
