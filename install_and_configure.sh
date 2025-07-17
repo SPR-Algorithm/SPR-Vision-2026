@@ -13,6 +13,7 @@ fi
 
 echo "[启动apt更新]"
 sudo apt update && sudo apt upgrade -y
+sudo apt-get install -y gcc-12
 sudo apt-get install -y unzip
 sudo apt-get install -y ros-humble-image-transport-plugins
 sudo apt-get install -y ros-humble-asio-cmake-module
@@ -81,7 +82,6 @@ echo "[CH341驱动安装完成]"
 echo "[开始添加udev规则]"
 sudo cp ./rules/camera.rules /etc/udev/rules.d/
 sudo cp ./rules/serial.rules /etc/udev/rules.d/
-
 sudo udevadm control --reload-rules && sudo udevadm trigger
 echo "[udev规则添加完成]"
 

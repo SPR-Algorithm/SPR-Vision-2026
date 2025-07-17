@@ -11,4 +11,6 @@ utils/libs/fmt-10.2.1
 utils/libs/Sophus-1.22.10
 utils/libs/ceres-solver-2.0.0
 utils/libs/spdlog-1.14.0
+utils/CH341SER_LINUX
 GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+fishros

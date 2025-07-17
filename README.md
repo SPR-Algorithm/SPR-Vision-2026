@@ -3,58 +3,11 @@
 部分基于rmvision项目，中南大学，深圳大学视觉开源
 贡献者&维护者：SPR算法组
 
+# 各兵种针对部署备忘录
+各台车的相机内参以及相机-云台变换尺寸均需要针对实际进行修改
+
 # 全流程部署指南
 
-## 1. 安装Ubuntu 22.04 LTS
-强烈建议安装时选择Minimal Installation，可以少点没用的东西。
-
-## 2. fishros安装ros2 humble desktop
-```
-wget http://fishros.com/install -O fishros && . fishros
-sudo apt update && sudo apt upgrade
-sudo apt-get install ros-humble-image-transport-plugins
-sudo apt install ros-humble-asio-cmake-module
-sudo apt install ros-humble-foxglove-bridge
-sudo apt install ros-humble-serial-driver
-```
-
-## 3.使用一键安装脚本安装依赖
-```
-chmod +x install_from_zips.sh
-./install_from_zips.sh
-```
-
-## 4. 编译安装CH341驱动并配置串口
-```
-sudo apt remove brltty
-```
-![image](https://github.com/user-attachments/assets/c4abf805-2ec8-453b-90ed-23c1549c6840)
-下载并按照压缩包内readme配置串口驱动
-
-如果提示没有gcc-12，使用apt安装gcc-12
-如果提示insmod: ERROR: could not insert module ch341.ko: Unknown symbol in module
-
-则进行
-```
-modinfo ch341.ko |grep depends
-depends:        usbserial
-```
-然后
-```
-sudo modprobe usbserial
-```
-问题应该解决
-
-### 安装完成后：
-
-验证：lsmod | grep ch34
-ch341                  24576  0
-usbserial              69632  1 ch341
-
-### 以下为手动安装方法，一键安装脚本遇到问题时，可单独对照进行debug
-
-#### 安装spdlog库（版本1.14）
-压缩包解
 ## 1. 安装Ubuntu 22.04 LTS
 强烈建议安装时选择Minimal Installation，可以少点没用的东西。
 
@@ -160,12 +113,7 @@ rqt选择/armor\_detector节点配置，打开debug选项，可在左侧image vi
 ## 8.云台-相机描述模型尺寸修改
 右手系，相机镜片平面中心与云台转动轴中心的相对位置，根据兵种情况修改xyz
 
-## 9.各兵种针对部署
-针对实际修改：
-各台车的相机内参以及相机-云台变换尺寸
-自启动脚本的目录路径
-
-## 以下为手动安装依赖库方法，一键安装脚本遇到问题时，可单独对照进行debug
+## 以下为手动安装方法，一键安装脚本遇到问题时，可单独对照进行debug
 
 ### 编译安装CH341驱动并配置串口
 ```
