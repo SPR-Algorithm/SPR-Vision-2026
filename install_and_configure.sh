@@ -26,6 +26,7 @@ sudo apt-get install -y libsuitesparse-dev
 sudo apt-get remove -y brltty
 sudo apt install ros-humble-camera-info-manager
 sudo apt install ros-humble-camera-info-manager-dbgsym
+sudo apt install ros-humble-camera-calibration
 echo "[apt更新完成]"
 
 echo "[开始调整swap分区大小]"
