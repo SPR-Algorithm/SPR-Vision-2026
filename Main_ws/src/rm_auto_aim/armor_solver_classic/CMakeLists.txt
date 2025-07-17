@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
-project(rm_serial_driver)
+project(armor_solver)
 
-## Use C++17
+## Use C++14
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -24,20 +24,13 @@ ament_auto_find_build_dependencies()
 ###########
 
 ament_auto_add_library(${PROJECT_NAME} SHARED
-DIRECTORY src
+  DIRECTORY src
 )
 
 rclcpp_components_register_node(${PROJECT_NAME}
-  PLUGIN spr::serial_driver::SerialDriverNode
+  PLUGIN spr::auto_aim::ClassicArmorSolverNode
   EXECUTABLE ${PROJECT_NAME}_node
 )
-
-rclcpp_components_register_node(${PROJECT_NAME}
-  PLUGIN spr::serial_driver::VirtualSerialNode
-  EXECUTABLE virtual_serial_node
-)
-
-target_include_directories(${PROJECT_NAME}_node PUBLIC include)
 
 #############
 ## Testing ##
@@ -51,16 +44,13 @@ if(BUILD_TESTING)
     ament_cmake_cpplint
   )
   ament_lint_auto_find_test_dependencies()
+
   find_package(ament_cmake_gtest)
 
-  ament_add_gtest(test_fixed_packet_tool test/test_fixed_packet_tool.cpp)
-  target_link_libraries(test_fixed_packet_tool ${PROJECT_NAME})
 endif()
 
 #############
 ## Install ##
 #############
 
-ament_auto_package(
-  INSTALL_TO_SHARE
-)
+ament_auto_package()
