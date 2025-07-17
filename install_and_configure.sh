@@ -4,7 +4,7 @@
 echo "[请求sudo权限]"
 sudo -v
 
-cd Utils
+cd utils
 
 if [ $? -ne 0 ]; then
     echo "[请求sudo权限失败]"
@@ -37,18 +37,19 @@ sudo swapon /swapfile
 echo "[swap分区大小调整完成]"
 
 echo "[开始安装依赖]"
+cd libs
 # 遍历当前目录下的所有zip文件
 for ZIP_FILE in *.zip; do
     # 检查是否存在zip文件
     if [[ -f "$ZIP_FILE" ]]; then
         # 解压zip文件到同名目录
-        unzip "$ZIP_FILE"
+        unzip -o "$ZIP_FILE"
 
         # 进入解压后的目录
         cd "${ZIP_FILE%.zip}" || continue
         # 替换cere的cmake里面的FindTBB
         if [[ "${ZIP_FILE%.zip}" == "ceres-solver-2.0.0" ]]; then
-            echo "change FindTBB"
+            echo "Fixing FindTBB for ceres-solver"
             cp ../FindTBB_new.cmake ./cmake/FindTBB.cmake
         fi
 
@@ -67,7 +68,15 @@ for ZIP_FILE in *.zip; do
         echo "No zip files found in the current directory."
     fi
 done
+cd ..
 echo "[依赖安装完成]"
+
+echo "[开始安装CH341驱动]"
+unzip -o CH341SER_LINUX.ZIP
+cd CH341SER_LINUX/driver
+make
+sudo make install
+echo "[CH341驱动安装完成]"
 
 echo "[开始添加udev规则]"
 sudo cp ./rules/camera.rules /etc/udev/rules.d/
@@ -76,9 +85,16 @@ sudo cp ./rules/serial.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules && sudo udevadm trigger
 echo "[udev规则添加完成]"
 
+echo "[开始安装OpenVINO]"
+wget -O https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+echo "deb https://apt.repos.intel.com/openvino/2024 ubuntu22 main" | sudo tee /etc/apt/sources.list.d/intel-openvino-2024.list
+sudo apt update
+sudo apt install openvino-2024.6.0
+echo "[OpenVINO安装完成]"
+
 echo "[开始测试编译工作空间]"
-cd ..
-cd Main_ws
+cd .. && cd Main_ws
 colcon build --symlink-install --parallel-workers 4
 echo "[编译工作空间完成]"
 

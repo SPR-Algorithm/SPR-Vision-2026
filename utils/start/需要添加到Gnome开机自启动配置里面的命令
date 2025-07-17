@@ -2,4 +2,4 @@
 gnome-terminal -- bash -c /home/spr/Desktop/SPR_utils/start/autoaim_begin.sh
 
 #调试信息录制自启动
-gnome-terminal -- bash -c /home/spr/Desktop/SPR_utils/start/record.sh
+gnome-terminal -- bash -c /home/spr/Desktop/SPR_utils/start/recordloop.sh
