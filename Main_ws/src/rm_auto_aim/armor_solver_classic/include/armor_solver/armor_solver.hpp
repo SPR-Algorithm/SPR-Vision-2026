@@ -100,6 +100,9 @@ private:
 
   double shooting_range_w_;
   double shooting_range_h_;
+  double Relative_yaw_angle_deviation_;
+  double Relative_yaw_angle_deviation_outpost_;
+  double angular_velocity_coefficient_;
 
   double max_tracking_v_yaw_;
   int overflow_count_;

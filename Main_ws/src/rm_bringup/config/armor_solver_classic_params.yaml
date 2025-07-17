@@ -24,6 +24,8 @@
       lost_time_thres: 1.5
     
     solver:
+      shooting_range_width: 0.5 # 射击范围宽度
+      shooting_range_height: 0.5 # 射击范围高度
       prediction_delay: 0.05
       controller_delay: 0.0
       max_tracking_v_yaw: 60.0 #转速(rad/s)大于这个值时瞄准机器人中心 
@@ -32,22 +34,13 @@
       compenstator_type: "ideal"
       gravity: 9.8
       resistance: 0.092
-      iteration_times: 20 # 补偿的迭代次数
+      iteration_times: 20
+      relative_yaw_angle_deviation_: 2.0 # 相对偏航角偏差
+      relative_yaw_angle_deviation_output_: 6.0 # 相对偏航角偏差阈值
+       # 补偿的迭代次数
       # ["距离下限, 距离上限, 高度下限, 高度下限, pitch轴补偿值"]
       angle_offset: [
         "0.0 0.0 0.0 0.0 0.0 0.0",
-        "0.0 0.0 0.0 0.0 0.0 0.0",
-        "0.0 0.0 0.0 0.0 0.0 0.0",
-        "0.0 0.0 0.0 0.0 0.0 0.0",
-        #"2.0 3.0 -1.0 1.2 4.5 1.5",
-        #"3.0 8.0 -1.0 1.2 3.5 1.5",
-        
-        #"6.0 7.0 -1.0 0.4 0.0",
-        #"6.0 7.0  0.4 0.8 0.0",
-        #"6.0 7.0  0.8 1.2 0.0",
-        #"7.0 8.0 -1.0 0.4 0.0",
-        #"7.0 8.0  0.4 0.8 0.0",
-        #"7.0 8.0  0.8 1.2 0.0",
       ]
 
 
