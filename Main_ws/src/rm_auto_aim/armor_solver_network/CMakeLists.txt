@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(armor_solver)
+project(armor_solver_network)
 
 ## Use C++14
 set(CMAKE_CXX_STANDARD 17)

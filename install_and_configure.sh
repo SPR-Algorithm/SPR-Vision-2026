@@ -96,6 +96,6 @@ echo "[OpenVINO安装完成]"
 echo "[开始测试编译工作空间]"
 cd .. && cd Main_ws
 colcon build --symlink-install --parallel-workers 4
-echo "[编译工作空间完成]"
+echo "[测试编译工作空间完成]"
 
 echo "[脚本运行完毕]"
