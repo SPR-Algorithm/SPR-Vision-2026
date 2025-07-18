@@ -60,7 +60,7 @@ fmt::fmt
 
 
 rclcpp_components_register_node(${PROJECT_NAME}
-  PLUGIN spr::auto_aim::ClassicArmorDetectorNode
+  PLUGIN fyt::auto_aim::ArmorDetectorNode
   EXECUTABLE armor_detector_node
 )
 

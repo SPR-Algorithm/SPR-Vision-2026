@@ -248,9 +248,9 @@ std::unique_ptr<Detector> ArmorDetectorNode::initDetector() {
   // Init classifier
   namespace fs = std::filesystem;
   fs::path model_path = utils::URLResolver::getResolvedPath(
-      "package://armor_detector/model/lenet.onnx");
+      "package://armor_detector_classic/model/lenet.onnx");
   fs::path label_path = utils::URLResolver::getResolvedPath(
-      "package://armor_detector/model/label.txt");
+      "package://armor_detector_classic/model/label.txt");
   FYT_ASSERT_MSG(fs::exists(model_path) && fs::exists(label_path),
                  model_path.string() + " Not Found!");
 
