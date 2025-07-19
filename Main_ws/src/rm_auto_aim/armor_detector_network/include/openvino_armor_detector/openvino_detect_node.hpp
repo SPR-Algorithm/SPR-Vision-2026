@@ -97,6 +97,9 @@ private:
   std::shared_ptr<tf2_ros::Buffer> tf2_buffer_;
   std::shared_ptr<tf2_ros::TransformListener> tf2_listener_;
 
+  //model path
+  std::string model_path_xml_;
+  std::string model_path_bin_;
 };
 
 }  // namespace rm_auto_aim
