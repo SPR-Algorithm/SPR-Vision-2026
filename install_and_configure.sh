@@ -1,6 +1,6 @@
 #!/bin/bash
+echo "[务必确保目录命名为SPR-Vision-2026]"
 
-# 提示用户输入sudo密码
 echo "[请求sudo权限]"
 sudo -v
 
@@ -19,6 +19,7 @@ sudo apt-get install -y ros-humble-image-transport-plugins
 sudo apt-get install -y ros-humble-asio-cmake-module
 sudo apt-get install -y ros-humble-foxglove-bridge
 sudo apt-get install -y ros-humble-serial-driver
+sudo apt-get install -y ros-humble-xacro
 sudo apt-get install -y ros-humble-camera-calibration
 sudo apt-get install -y libgoogle-glog-dev
 sudo apt-get install -y libmetis-dev
@@ -87,12 +88,26 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 echo "[udev规则添加完成]"
 
 echo "[开始安装OpenVINO]"
-wget -O https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
 sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
 echo "deb https://apt.repos.intel.com/openvino/2024 ubuntu22 main" | sudo tee /etc/apt/sources.list.d/intel-openvino-2024.list
 sudo apt update
 sudo apt install openvino-2024.6.0
+cd neo
+wget https://github.com/intel/intel-graphics-compiler/releases/download/igc-1.0.17384.11/intel-igc-core_1.0.17384.11_amd64.deb
+wget https://github.com/intel/intel-graphics-compiler/releases/download/igc-1.0.17384.11/intel-igc-opencl_1.0.17384.11_amd64.deb
+wget https://github.com/intel/compute-runtime/releases/download/24.31.30508.7/intel-level-zero-gpu-dbgsym_1.3.30508.7_amd64.ddeb
+wget https://github.com/intel/compute-runtime/releases/download/24.31.30508.7/intel-level-zero-gpu_1.3.30508.7_amd64.deb
+wget https://github.com/intel/compute-runtime/releases/download/24.31.30508.7/intel-opencl-icd-dbgsym_24.31.30508.7_amd64.ddeb
+wget https://github.com/intel/compute-runtime/releases/download/24.31.30508.7/intel-opencl-icd_24.31.30508.7_amd64.deb
+wget https://github.com/intel/compute-runtime/releases/download/24.31.30508.7/libigdgmm12_22.4.1_amd64.deb
+sudo dpkg -i *.deb
+cd ..
 echo "[OpenVINO安装完成]"
+
+echo "[开始配置自启动脚本]"
+chmod +x ./start/*.sh
+echo "[自启动脚本配置完成]"
 
 echo "[开始测试编译工作空间]"
 cd .. && cd Main_ws
