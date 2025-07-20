@@ -22,6 +22,6 @@ rune: false
 # true: 启动导航tf false：不启动导航tf
 navigation: false
 # true: 使用传统视觉 false：使用神经网络
-mode: true
+mode: false
 # true: 使用海康相机 false：使用迈德相机
 camera: true

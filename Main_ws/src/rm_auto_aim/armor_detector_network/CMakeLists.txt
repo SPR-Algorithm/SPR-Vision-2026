@@ -104,12 +104,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 target_link_libraries(${PROJECT_NAME}
   ${other_dependencies}
-
 )
 ament_target_dependencies(${PROJECT_NAME} ${ros_dependencies})
 
 rclcpp_components_register_node(${PROJECT_NAME}
-  PLUGIN "spr::auto_aim::NetworkArmorDetectorNode"
+  PLUGIN "fyt::auto_aim::OpenVINODetectNode"
   EXECUTABLE detector_node
 )
 

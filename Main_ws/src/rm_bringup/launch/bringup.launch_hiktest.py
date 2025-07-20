@@ -59,8 +59,13 @@ def generate_launch_description():
     #     )
     # image_node = get_camera_node('mindvision_camera', 'mindvision_camera::MVCameraNode')
 
-    node_params = os.path.join(
+    if launch_params['camera']:
+        node_params = os.path.join(
     get_package_share_directory('rm_bringup'), 'config', 'camera_params_hik.yaml')
+    else:
+        node_params = os.path.join(
+    get_package_share_directory('rm_bringup'), 'config', 'camera_params_mv.yaml')
+        
     def get_camera_node(package, plugin):
         return ComposableNode(
             package=package,
@@ -69,7 +74,11 @@ def generate_launch_description():
             parameters=[node_params],
             extra_arguments=[{'use_intra_process_comms': True}]
         )
-    image_node = get_camera_node('hik_camera', 'hik_camera::HikCameraNode')
+    
+    if launch_params['camera']:
+        image_node = get_camera_node('hik_camera', 'hik_camera::HikCameraNode')
+    else:
+        image_node = get_camera_node('mindvision_camera', 'mindvision_camera::MVCameraNode')
     # 串口
     if launch_params['virtual_serial']:
         serial_driver_node = Node(
@@ -93,11 +102,21 @@ def generate_launch_description():
         )
         
     # 装甲板识别
-    armor_detector_node = ComposableNode(
+    
+    if launch_params['mode']:
+        armor_detector_node = ComposableNode(
         package='armor_detector_classic', 
         plugin='fyt::auto_aim::ArmorDetectorNode',
         name='armor_detector_classic',
-        parameters=[get_params('armor_detector')],
+        parameters=[get_params('armor_detector_classic')],
+        extra_arguments=[{'use_intra_process_comms': True}]
+    )
+    else:
+        armor_detector_node = ComposableNode(
+        package='armor_detector_network', 
+        plugin='fyt::auto_aim::OpenVINODetectNode',
+        name='armor_detector_network',
+        parameters=[get_params('armor_detector_network')],
         extra_arguments=[{'use_intra_process_comms': True}]
     )
     
@@ -113,7 +132,8 @@ def generate_launch_description():
             ros_arguments=[],
         )
     else:
-        armor_solver_node = Node(
+        if launch_params['mode']:
+            armor_solver_node = Node(
             package='armor_solver_classic',
             executable='armor_solver_classic_node',
             name='armor_solver',
@@ -122,7 +142,17 @@ def generate_launch_description():
             parameters=[get_params('armor_solver_classic')],
             ros_arguments=[],
         )
-
+        else:
+            armor_solver_node = Node(
+            package='armor_solver_network',
+            executable='armor_solver_network_node',
+            name='armor_solver',
+            output='both',
+            emulate_tty=True,
+            parameters=[get_params('armor_solver_network')],
+            ros_arguments=[],
+        )
+        
     # 打符
     rune_detector_node = ComposableNode(    
         package='rune_detector',

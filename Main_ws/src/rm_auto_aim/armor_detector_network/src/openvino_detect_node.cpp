@@ -33,12 +33,11 @@ OpenVINODetectNode::OpenVINODetectNode(rclcpp::NodeOptions options)
 
   RCLCPP_INFO(this->get_logger(), "Initializing OpenVINO");
   detector_ = nullptr;
-
   //实例化检测器
-  string model_path_xml="/home/spr/SPR-Vision-2025-main-wheel/src/rm_auto_aim/openvino_armor_detector/model/0708.xml";
-  string model_path_bin="/home/spr/SPR-Vision-2025-main-wheel/src/rm_auto_aim/openvino_armor_detector/model/0708.bin";
-  string device="GPU";
-  detector_=std::make_shared<OpenVINODetector>(model_path_xml,model_path_bin,device);
+  model_path_xml_= this->declare_parameter("model_path_xml", "package://armor_detector_network/model/0708.xml");
+  model_path_bin_= this->declare_parameter("model_path_bin", "package://armor_detector_network/model/0708.bin");
+  std::string device="GPU";
+  detector_=std::make_shared<OpenVINODetector>(model_path_xml_,model_path_bin_,device);
   detector_->set_callback(
     std::bind(
       &OpenVINODetectNode::openvino_detect_callback, this, std::placeholders::_1,
