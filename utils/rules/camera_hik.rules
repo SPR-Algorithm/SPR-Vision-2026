@@ -1,0 +1,9 @@
+SUBSYSTEMS=="usb", 
+ATTRS{idVendor}=="2bdf", 
+ATTRS{idProduct}=="0001", 
+GROUP="users", 
+MODE="0777",
+SYMLINK+="camera"
+
+
+
