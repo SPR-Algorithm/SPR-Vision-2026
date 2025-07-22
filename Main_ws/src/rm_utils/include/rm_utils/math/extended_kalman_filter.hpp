@@ -46,7 +46,7 @@ public:
   using MatrixX1 = Eigen::Matrix<double, N_X, 1>;
   using MatrixZ1 = Eigen::Matrix<double, N_Z, 1>;
 
-  using UpdateQFunc = std::function<MatrixXX()>;
+  using UpdateQFunc = std::function<MatrixXX(const Eigen::VectorXd & x_p)>;
   using UpdateRFunc = std::function<MatrixZZ(const MatrixZ1 &z)>;
 
   explicit ExtendedKalmanFilter(const PredicFunc &f,
@@ -82,7 +82,7 @@ public:
       F.block(i, 0, 1, N_X) = x_p_jet[i].v.transpose();
     }
 
-    Q = update_Q();
+    Q = update_Q(x_post);
     P_pri = F * P_post * F.transpose() + Q;
     x_post = x_pri;
 
