@@ -21,6 +21,7 @@
 // std
 #include <memory>
 #include <vector>
+#include <cmath>
 // project
 #include "armor_solver/motion_model.hpp"
 #include "rm_utils/common.hpp"
@@ -55,21 +56,41 @@ ArmorSolverNode::ArmorSolverNode(const rclcpp::NodeOptions &options)
   // h - Observation function
   auto h = Measure();
   // update_Q - process noise covariance matrix
-  s2qx_ = declare_parameter("ekf.sigma2_q_x", 20.0);
-  s2qy_ = declare_parameter("ekf.sigma2_q_y", 20.0);
-  s2qz_ = declare_parameter("ekf.sigma2_q_z", 20.0);
-  s2qyaw_ = declare_parameter("ekf.sigma2_q_yaw", 100.0);
-  s2qr_ = declare_parameter("ekf.sigma2_q_r", 800.0);
+  s2qx_max = declare_parameter("ekf.sigma2_q_x_max", 0.1);
+  s2qy_max = declare_parameter("ekf.sigma2_q_y_max", 0.1);
+  s2qz_max = declare_parameter("ekf.sigma2_q_z_max", 0.1);
+  s2qyaw_max = declare_parameter("ekf.sigma2_q_yaw_max", 10.0);
+
+  s2qx_min = declare_parameter("ekf.sigma2_q_x_min", 0.05);
+  s2qy_min = declare_parameter("ekf.sigma2_q_y_min", 0.05);
+  s2qz_min = declare_parameter("ekf.sigma2_q_z_min", 0.05);
+  s2qyaw_min = declare_parameter("ekf.sigma2_q_yaw_min", 5.0);
+
+  s2qr_ = declare_parameter("ekf.sigma2_q_r", 80.0);
   s2qd_zc_ = declare_parameter("ekf.sigma2_q_d_zc", 800.0);
 
-  auto u_q = [this]() {
+  auto u_q = [this](const Eigen::VectorXd & x_p) {
     Eigen::Matrix<double, X_N, X_N> q;
-    double t = dt_, x = s2qx_, y = s2qy_, z = s2qz_, yaw = s2qyaw_, r = s2qr_, d_zc=s2qd_zc_;
-    double q_x_x = pow(t, 4) / 4 * x, q_x_vx = pow(t, 3) / 2 * x, q_vx_vx = pow(t, 2) * x;
-    double q_y_y = pow(t, 4) / 4 * y, q_y_vy = pow(t, 3) / 2 * y, q_vy_vy = pow(t, 2) * y;
-    double q_z_z = pow(t, 4) / 4 * x, q_z_vz = pow(t, 3) / 2 * x, q_vz_vz = pow(t, 2) * z;
-    double q_yaw_yaw = pow(t, 4) / 4 * yaw, q_yaw_vyaw = pow(t, 3) / 2 * x,
-           q_vyaw_vyaw = pow(t, 2) * yaw;
+    double t = dt_;
+    // x = s2qx_, y = s2qy_, z = s2qz_, yaw = s2qyaw_, 
+    double r = s2qr_; 
+    double d_zc=s2qd_zc_;
+
+    double vx = x_p(1), vy = x_p(3), v_yaw = x_p(7);
+    double dx = pow(pow(vx,2)+pow(vy,2),0.5);
+    double dy = abs(v_yaw);
+    double x_factor = exp(-dy)*(s2qx_max-s2qx_min)+s2qx_min;
+    double y_factor = exp(-dy)*(s2qy_max-s2qy_min)+s2qy_min;
+    double z_factor = exp(-dy)*(s2qz_max-s2qz_min)+s2qz_min;
+    double yaw_factor = exp(-dx)*(s2qyaw_max-s2qyaw_min)+s2qyaw_min;
+
+    std::cout << "x_factor: " << std::fixed << std::setprecision(6) << x_factor << std::endl;
+
+    double q_x_x = pow(t, 4) / 4 * x_factor, q_x_vx = pow(t, 3) / 2 * x_factor, q_vx_vx = pow(t, 2) * x_factor;
+    double q_y_y = pow(t, 4) / 4 * y_factor, q_y_vy = pow(t, 3) / 2 * y_factor, q_vy_vy = pow(t, 2) * y_factor;
+    double q_z_z = pow(t, 4) / 4 * z_factor, q_z_vz = pow(t, 3) / 2 * z_factor, q_vz_vz = pow(t, 2) * z_factor;
+    double q_yaw_yaw = pow(t, 4) / 4 * yaw_factor, q_yaw_vyaw = pow(t, 3) / 2 * yaw_factor,
+           q_vyaw_vyaw = pow(t, 2) * yaw_factor;
     double q_r = pow(t, 4) / 4 * r;
     double q_d_zc = pow(t, 4) / 4 * d_zc;
     // clang-format off
@@ -191,7 +212,7 @@ void ArmorSolverNode::timerCallback() {
       control_msg = solver_->solve(armor_target_, this->now(), tf2_buffer_);
       //last_yaw=control_msg.yaw;
       //last_pitch=control_msg.pitch;
-      //std::cout<<"distance: "<<control_msg.distance<<std::endl;
+      //std::cout<<"control_msg distance: "<<control_msg.distance<<std::endl;
       //std::cout<<"last yaw: "<<last_yaw<<" last pitch: "<<last_pitch<<std::endl;
     } catch (...) {
       FYT_ERROR("armor_solver", "Something went wrong in solver!");
@@ -307,6 +328,7 @@ void ArmorSolverNode::armorsCallback(const rm_interfaces::msg::Armors::SharedPtr
   } else {
     dt_ = (time - last_time_).seconds();
     tracker_->lost_thres = std::abs(static_cast<int>(lost_time_thres_ / dt_));
+
     if (tracker_->tracked_id == "outpost") {
       tracker_->ekf->setPredictFunc(Predict{dt_, MotionModel::CONSTANT_VEL_ROT});
     } else {
@@ -319,6 +341,8 @@ void ArmorSolverNode::armorsCallback(const rm_interfaces::msg::Armors::SharedPtr
     measure_msg.z = tracker_->measurement(2);
     measure_msg.yaw = tracker_->measurement(3);
     measure_pub_->publish(measure_msg);
+ 
+ 
 
     if (tracker_->tracker_state == Tracker::DETECTING) {
       target_msg.tracking = false;

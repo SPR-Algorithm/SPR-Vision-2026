@@ -65,7 +65,7 @@ RuneSolverNode::RuneSolverNode(const rclcpp::NodeOptions &options) : Node("rune_
   // update_Q - process noise covariance matrix
   std::vector<double> q_vec =
     declare_parameter("ekf.q", std::vector<double>{0.001, 0.001, 0.001, 0.001});
-  auto u_q = [q_vec]() {
+  auto u_q = [q_vec](const Eigen::VectorXd & x_p) {
     Eigen::Matrix<double, X_N, X_N> q = Eigen::MatrixXd::Zero(4, 4);
     q.diagonal() << q_vec[0], q_vec[1], q_vec[2], q_vec[3];
     return q;
