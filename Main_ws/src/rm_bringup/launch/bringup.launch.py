@@ -10,8 +10,10 @@ def generate_launch_description():
 
     from launch_ros.descriptions import ComposableNode
     from launch_ros.actions import ComposableNodeContainer, Node, SetParameter, PushRosNamespace
-    from launch.actions import TimerAction, Shutdown
+    from launch.actions import TimerAction, Shutdown, RegisterEventHandler ,LogInfo
     from launch import LaunchDescription
+    from launch.event_handlers import OnProcessExit
+
 
     launch_params = yaml.safe_load(open(os.path.join(
         get_package_share_directory('rm_bringup'), 'config', 'launch_params.yaml')))
@@ -185,50 +187,70 @@ def generate_launch_description():
             emulate_tty=True,
             ros_arguments=['--ros-args', ],
         )
-        return TimerAction(
+        timer_action = TimerAction(
             period=2.0,
             actions=[container],
         )
+        return container, timer_action
 
-    # 延迟启动
+    # 延迟启动节点
     delay_serial_node = TimerAction(
         period=1.5,
         actions=[serial_driver_node],
     )
-
     delay_armor_solver_node = TimerAction(
         period=2.0,
         actions=[armor_solver_node],
     )
-    
     delay_rune_solver_node = TimerAction(
         period=2.0,
         actions=[rune_solver_node],
     )
-    
-    if launch_params['rune']:
-        cam_detector_node = get_camera_detector_container(armor_detector_node, rune_detector_node)
-    else:
-        cam_detector_node = get_camera_detector_container(armor_detector_node)
 
-    delay_cam_detector_node = TimerAction(
-        period=2.0,
-        actions=[cam_detector_node],
+    # 构造容器和启动延时动作
+    if launch_params['rune']:
+        container, cam_detector_timer = get_camera_detector_container(armor_detector_node, rune_detector_node)
+    else:
+        container, cam_detector_timer = get_camera_detector_container(armor_detector_node)
+
+    # 注册容器退出处理器
+    container_exit_handler = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=container,
+            on_exit=[
+                LogInfo(msg="[紧急] 相机节点崩溃，触发系统关闭！"),
+                Shutdown(reason='Camera failure detected')
+            ]
         )
-    
+    )
+    serial_exit_handler = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=serial_driver_node,
+            on_exit=[
+                LogInfo(msg='[警告] 串口节点崩溃，触发系统关闭！'),
+                Shutdown(reason='Serial driver crashed')
+            ]
+        )
+    )
     push_namespace = PushRosNamespace(launch_params['namespace'])
-    
+
+
+    # 构造 LaunchDescription 列表
     launch_description_list = [
         robot_gimbal_publisher,
         push_namespace,
         delay_serial_node,
-        delay_cam_detector_node,
-        delay_armor_solver_node]
-    
+        cam_detector_timer,
+        delay_armor_solver_node,
+        container_exit_handler,
+        serial_exit_handler
+    ]
+
+    # 可选节点按需加入
     if launch_params['rune']:
         launch_description_list.append(delay_rune_solver_node)
-    
+
     if launch_params['navigation']:
         launch_description_list.append(robot_navigation_publisher)
-    
+
     return LaunchDescription(launch_description_list)
