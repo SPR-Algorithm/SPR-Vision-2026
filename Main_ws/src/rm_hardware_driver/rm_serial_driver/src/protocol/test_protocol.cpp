@@ -27,32 +27,45 @@ TestProtocol::TestProtocol(std::string_view port_name, bool enable_data_print) {
   packet_tool16->enbaleDataPrint(enable_data_print);
 }
 
-std::vector<rclcpp::SubscriptionBase::SharedPtr> TestProtocol::getSubscriptions(
-  rclcpp::Node::SharedPtr node) {
-  return {node->create_subscription<rm_interfaces::msg::GimbalCmd>(
-    "armor_solver/cmd_gimbal",
-    rclcpp::SensorDataQoS(),
-    [this](const rm_interfaces::msg::GimbalCmd::SharedPtr msg) { this->send(*msg); })
-  };
-}
-
-//下面没用
-//用来订阅tracker的id消息，填充gimbal里面的id数据，对应我们电控的逻辑
-// std::vector<rclcpp::SubscriptionBase::SharedPtr> TestProtocol::getidSubscription(
+// std::vector<rclcpp::SubscriptionBase::SharedPtr> TestProtocol::getSubscriptions(
 //   rclcpp::Node::SharedPtr node) {
-//   return {node->create_subscription<rm_interfaces::msg::Target>(
-//     "armor_solver/target",
+//   return {node->create_subscription<rm_interfaces::msg::GimbalCmd>(
+//     "armor_solver/cmd_gimbal",
 //     rclcpp::SensorDataQoS(),
 //     [this](const rm_interfaces::msg::GimbalCmd::SharedPtr msg) { this->send(*msg); })
-
 //   };
 // }
 
+std::vector<rclcpp::SubscriptionBase::SharedPtr> TestProtocol::getSubscriptions(
+  rclcpp::Node::SharedPtr node) {
+  auto sub1 = node->create_subscription<rm_interfaces::msg::GimbalCmd>(
+    "armor_solver/cmd_gimbal",
+    rclcpp::SensorDataQoS(),
+    [this](const rm_interfaces::msg::GimbalCmd::SharedPtr msg) { this->send(*msg); });
+  auto sub2 = node->create_subscription<rm_interfaces::msg::GimbalCmd>(
+    "rune_solver/cmd_gimbal",
+    rclcpp::SensorDataQoS(),
+    [this](const rm_interfaces::msg::GimbalCmd::SharedPtr msg) { this->send(*msg); });
+  return {sub1, sub2};
+}
+
+// std::vector<rclcpp::Client<rm_interfaces::srv::SetMode>::SharedPtr> TestProtocol::getClients(
+//   rclcpp::Node::SharedPtr node) const {
+//   return {node->create_client<rm_interfaces::srv::SetMode>("armor_detector/set_mode",
+//                                                            rmw_qos_profile_services_default)};
+// }
 
 std::vector<rclcpp::Client<rm_interfaces::srv::SetMode>::SharedPtr> TestProtocol::getClients(
   rclcpp::Node::SharedPtr node) const {
-  return {node->create_client<rm_interfaces::srv::SetMode>("armor_detector/set_mode",
-                                                           rmw_qos_profile_services_default)};
+  auto client1 = node->create_client<rm_interfaces::srv::SetMode>("armor_detector/set_mode",
+                                                                  rmw_qos_profile_services_default);
+  auto client2 = node->create_client<rm_interfaces::srv::SetMode>("armor_solver/set_mode",
+                                                                  rmw_qos_profile_services_default);
+  auto client3 = node->create_client<rm_interfaces::srv::SetMode>("rune_detector/set_mode",
+                                                                  rmw_qos_profile_services_default);
+  auto client4 = node->create_client<rm_interfaces::srv::SetMode>("rune_solver/set_mode",
+                                                                  rmw_qos_profile_services_default);
+  return {client1, client2, client3, client4};
 }
 
 void TestProtocol::send(const rm_interfaces::msg::GimbalCmd &data) {
