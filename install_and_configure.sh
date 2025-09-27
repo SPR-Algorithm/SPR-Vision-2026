@@ -25,9 +25,9 @@ sudo apt-get install -y libgoogle-glog-dev
 sudo apt-get install -y libmetis-dev
 sudo apt-get install -y libsuitesparse-dev
 sudo apt-get remove -y brltty
-sudo apt install ros-humble-camera-info-manager
-sudo apt install ros-humble-camera-info-manager-dbgsym
-sudo apt install ros-humble-camera-calibration
+sudo apt install -y ros-humble-camera-info-manager
+sudo apt install -y ros-humble-camera-info-manager-dbgsym
+sudo apt install -y ros-humble-camera-calibration
 echo "[apt更新完成]"
 
 echo "[开始调整swap分区大小]"
