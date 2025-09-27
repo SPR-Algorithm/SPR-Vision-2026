@@ -79,6 +79,8 @@ unzip -o CH341SER_LINUX.ZIP
 cd CH341SER_LINUX/driver
 make
 sudo make install
+cd ..
+cd ..
 echo "[CH341驱动安装完成]"
 
 echo "[开始添加udev规则]"
