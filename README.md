@@ -11,35 +11,32 @@
 ## 1. 安装Ubuntu 22.04 LTS
 强烈建议安装时选择Minimal Installation，可以少点没用的东西。
 
-## 2. fishros安装ros2 humble desktop
+## 2. 通过fishros一键安装ros2 humble desktop以及rosdepc
 ```
 wget http://fishros.com/install -O fishros && . fishros
-sudo apt update && sudo apt upgrade
-sudo apt-get install ros-humble-image-transport-plugins
-sudo apt install ros-humble-asio-cmake-module
-sudo apt install ros-humble-foxglove-bridge
-sudo apt install ros-humble-serial-driver
 ```
 
-## 3.使用一键脚本部署-n个愿望一次满足！
+## 3.使用一键安装脚本部署
 ```
 chmod +x install_and_configure.sh
 ./install_and_configure.sh
 ```
 
-## 4.部署测试SPR-Vision
-在src上层运行
+## 4.运行SPR-Vision
+首次运行前在Main_ws运行
 ```
 rosdepc update
 rosdepc install --from-paths src --ignore-src -r -y
+```
+然后进行编译
+```
 colcon build --symlink-install --parallel-workers 4
 ```
-成功编译后，按照如下方式启动：
+之后按照如下方式启动：
 ```
 source install/setup.bash
-ros2 launch rm_bringup bringup.launch_mvtest.py
+ros2 launch rm_bringup bringup.launch.py
 ```
-
 若遇到类似Something went wrong while looing up transform之类的串口通信问题，按照
 检查硬件连接->CuteCom检查串口接收通信工作情况->检查数据校验是否成功
 的步骤，依次检查与下位机的通信情况

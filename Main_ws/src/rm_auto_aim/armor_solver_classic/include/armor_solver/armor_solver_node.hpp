@@ -30,6 +30,11 @@
 #include <rclcpp/rclcpp.hpp>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 #include <visualization_msgs/msg/marker_array.hpp>
+#include <sensor_msgs/msg/camera_info.hpp>
+#include <sensor_msgs/msg/image.hpp>
+#include <image_transport/image_transport.hpp>
+#include <cv_bridge/cv_bridge.h>
+#include <opencv2/opencv.hpp>
 // std
 #include <memory>
 #include <string>
@@ -72,7 +77,7 @@ private:
   double dt_;
 
   // Armor tracker
-  double s2qx_, s2qy_, s2qz_, s2qyaw_, s2qr_, s2qd_zc_;
+  double s2qx_max, s2qy_max, s2qz_max, s2qyaw_max,s2qx_min, s2qy_min, s2qz_min, s2qyaw_min, s2qr_, s2qd_zc_;
   double r_x_, r_y_, r_z_, r_yaw_;
   double lost_time_thres_;
   std::unique_ptr<Tracker> tracker_;
@@ -97,6 +102,9 @@ private:
   rclcpp::TimerBase::SharedPtr pub_timer_;
   void timerCallback();
   
+  // 新增：装甲板坐标变换到世界坐标系
+  void transformArmorsToWorldCoordinates(const rm_interfaces::msg::Armors::SharedPtr &armors_msg);
+  
   // Enable/Disable Armor Solver
   bool enable_;
   rclcpp::Service<rm_interfaces::srv::SetMode>::SharedPtr set_mode_srv_;
@@ -109,6 +117,34 @@ private:
   visualization_msgs::msg::Marker armors_marker_;
   visualization_msgs::msg::Marker selection_marker_;
   rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_pub_;
+  
+  // 相机信息订阅
+  rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr cam_info_sub_;
+  sensor_msgs::msg::CameraInfo::SharedPtr latest_camera_info_;
+  
+  // 图像订阅（用于反投影可视化）
+  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_sub_;
+  sensor_msgs::msg::Image::SharedPtr latest_image_;
+  
+  // 反投影可视化
+  bool enable_reprojection_visualization_;
+  std::unique_ptr<image_transport::ImageTransport> image_transport_;
+  image_transport::Publisher reprojection_img_pub_;
+  
+  // 相机信息回调
+  void cameraInfoCallback(const sensor_msgs::msg::CameraInfo::SharedPtr camera_info);
+  
+  // 图像回调
+  void imageCallback(const sensor_msgs::msg::Image::SharedPtr image_msg);
+  
+  // 发布反投影图像
+  void publishReprojectionImage(const rm_interfaces::msg::Target &target_msg,
+                               const rm_interfaces::msg::Armors::SharedPtr armors_ptr);
+  
+  // 绘制反投影装甲板
+  void drawReprojectedArmors(cv::Mat &image, 
+                           const std::vector<std::vector<cv::Point2f>> &reprojected_armors,
+                           const rm_interfaces::msg::Armors::SharedPtr armors_ptr);
 };
 
 }  // namespace fyt::auto_aim

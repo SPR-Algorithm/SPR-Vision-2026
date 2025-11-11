@@ -80,6 +80,9 @@ void Tracker::update(const Armors::SharedPtr &armors_msg) noexcept {
   // KF predict
   Eigen::VectorXd ekf_prediction = ekf->predict();
 
+  //std::cout<<"predict"<<ekf_prediction<<std::endl;
+
+
   bool matched = false;
   // Use KF prediction as default target state if no matched armor is found
   target_state = ekf_prediction;
@@ -209,6 +212,7 @@ void Tracker::initEKF(const Armor &a) noexcept {
   double za = a.pose.position.z;
   last_yaw_ = 0;
   double yaw = orientationToYaw(a.pose.orientation);
+  std::cout<<"xa:"<<xa<<std::endl;
 
   // Set initial position at 0.2m behind the target
   target_state = Eigen::VectorXd::Zero(X_N);

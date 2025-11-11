@@ -273,8 +273,8 @@ rm_interfaces::msg::GimbalCmd RuneSolver::solveGimbalCmd(const Eigen::Vector3d &
   double cmd_yaw = angles::normalize_angle(yaw + yaw_offset);
 
   rm_interfaces::msg::GimbalCmd gimbal_cmd;
-  gimbal_cmd.yaw = cmd_yaw * 180 / M_PI;
-  gimbal_cmd.pitch = cmd_pitch * 180 / M_PI;
+  gimbal_cmd.yaw = cmd_yaw;
+  gimbal_cmd.pitch = cmd_pitch;
   gimbal_cmd.yaw_diff = (cmd_yaw - current_yaw) * 180 / M_PI;
   gimbal_cmd.pitch_diff = (cmd_pitch - current_pitch) * 180 / M_PI;
   gimbal_cmd.distance = distance;

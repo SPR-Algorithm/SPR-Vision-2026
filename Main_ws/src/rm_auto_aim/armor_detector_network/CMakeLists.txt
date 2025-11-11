@@ -33,7 +33,6 @@ find_package(image_transport_plugins REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
-find_package(auto_aim_interfaces REQUIRED)
 find_package(rm_interfaces REQUIRED)
 find_package(rmoss_interfaces REQUIRED)
 find_package(rmoss_util REQUIRED)
@@ -50,7 +49,6 @@ set(ros_dependencies
   tf2
   tf2_ros
   tf2_geometry_msgs
-  auto_aim_interfaces
   rm_interfaces
   rmoss_util
   rmoss_interfaces

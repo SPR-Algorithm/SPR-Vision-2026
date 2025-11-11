@@ -43,7 +43,7 @@ Solver::Solver(std::weak_ptr<rclcpp::Node> n) : node_(n) {
   std::string compensator_type = node->declare_parameter("solver.compensator_type", "ideal");
   trajectory_compensator_ = CompensatorFactory::createCompensator(compensator_type);
   trajectory_compensator_->iteration_times = node->declare_parameter("solver.iteration_times", 20);
-  trajectory_compensator_->velocity = node->declare_parameter("solver.bullet_speed", 27.0);
+  trajectory_compensator_->velocity = node->declare_parameter("solver.bullet_speed", 20.0);
   trajectory_compensator_->gravity = node->declare_parameter("solver.gravity", 9.8);
   trajectory_compensator_->resistance = node->declare_parameter("solver.resistance", 0.001);
 
@@ -98,7 +98,7 @@ rm_interfaces::msg::GimbalCmd Solver::solve(const rm_interfaces::msg::Target &ta
   double flying_time = trajectory_compensator_->getFlyingTime(target_position);
   double dt =
     (current_time - rclcpp::Time(target.header.stamp)).seconds() + flying_time + prediction_delay_;
- 
+    
   //修正完毕，开始预测
   target_position.x() += dt * target.velocity.x*velocity_factor_;
   target_position.y() += dt * target.velocity.y*velocity_factor_;
@@ -223,10 +223,8 @@ rm_interfaces::msg::GimbalCmd Solver::solve(const rm_interfaces::msg::Target &ta
     // std::cout<<"电控pitch"<<rpy_[1]<<std::endl;
     // std::cout<<"计算yaw"<<yaw<<std::endl;
     // std::cout<<"电控yaw"<<rpy_[2]<<std::endl;
-
-
-    //std::cout<<"pitch误差"<<std::fabs(pitch-rpy_[1])<<std::endl;
-    std::cout<<"yaw误差"<<std::fabs(yaw-rpy_[2])<<std::endl;
+    // std::cout<<"pitch误差"<<std::fabs(pitch-rpy_[1])<<std::endl;
+    //std::cout<<"yaw误差"<<std::fabs(yaw-rpy_[2])<<std::endl;
 
     //std::cout<<"gimbal yaw "<<rpy_[2]<<std::endl;
 

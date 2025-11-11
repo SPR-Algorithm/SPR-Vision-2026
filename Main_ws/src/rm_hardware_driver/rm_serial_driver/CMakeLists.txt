@@ -28,12 +28,12 @@ DIRECTORY src
 )
 
 rclcpp_components_register_node(${PROJECT_NAME}
-  PLUGIN spr::serial_driver::SerialDriverNode
+  PLUGIN fyt::serial_driver::SerialDriverNode
   EXECUTABLE ${PROJECT_NAME}_node
 )
 
 rclcpp_components_register_node(${PROJECT_NAME}
-  PLUGIN spr::serial_driver::VirtualSerialNode
+  PLUGIN fyt::serial_driver::VirtualSerialNode
   EXECUTABLE virtual_serial_node
 )
 

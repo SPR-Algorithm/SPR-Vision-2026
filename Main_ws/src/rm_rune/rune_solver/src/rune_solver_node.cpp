@@ -44,7 +44,7 @@ RuneSolverNode::RuneSolverNode(const rclcpp::NodeOptions &options) : Node("rune_
   auto rune_solver_params = RuneSolver::RuneSolverParams{
     .compensator_type = declare_parameter("compensator_type", "ideal"),
     .gravity = declare_parameter("gravity", 9.8),
-    .bullet_speed = declare_parameter("bullet_speet", 28.0),
+    .bullet_speed = declare_parameter("bullet_speed", 23.0),
     .angle_offset_thres = declare_parameter("angle_offset_thres", 0.78),
     .lost_time_thres = declare_parameter("lost_time_thres", 0.5),
     .auto_type_determined = declare_parameter("auto_type_determined", true),
@@ -65,7 +65,7 @@ RuneSolverNode::RuneSolverNode(const rclcpp::NodeOptions &options) : Node("rune_
   // update_Q - process noise covariance matrix
   std::vector<double> q_vec =
     declare_parameter("ekf.q", std::vector<double>{0.001, 0.001, 0.001, 0.001});
-  auto u_q = [q_vec]() {
+  auto u_q = [q_vec](const Eigen::VectorXd & x_p) {
     Eigen::Matrix<double, X_N, X_N> q = Eigen::MatrixXd::Zero(4, 4);
     q.diagonal() << q_vec[0], q_vec[1], q_vec[2], q_vec[3];
     return q;
@@ -219,6 +219,7 @@ void RuneSolverNode::timerCallback() {
       control_msg.yaw = 0;
       control_msg.fire_advice = false;
     }
+    gimbal_pub_->publish(control_msg);
   } else {
     control_msg.yaw_diff = 0;
     control_msg.pitch_diff = 0;
@@ -227,8 +228,8 @@ void RuneSolverNode::timerCallback() {
     control_msg.yaw = 0;
     control_msg.fire_advice = false;
   }
-  gimbal_pub_->publish(control_msg);
-
+  
+  
   if (debug_) {
     // Publish fitting info
     std_msgs::msg::String fitter_text_msg;
