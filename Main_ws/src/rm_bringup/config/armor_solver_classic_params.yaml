@@ -3,7 +3,8 @@
     debug: true
     target_frame: odom
     max_armor_distance: 10.0
-
+    enable_reprojection_visualization: true
+    
     ekf:
       sigma2_q_x_max: 1.5
       sigma2_q_y_max: 1.5
@@ -48,6 +49,8 @@
       angle_offset: [
         "0.0 0.0 0.0 0.0 0.0 0.0",
       ]
+
+    
 
 
 

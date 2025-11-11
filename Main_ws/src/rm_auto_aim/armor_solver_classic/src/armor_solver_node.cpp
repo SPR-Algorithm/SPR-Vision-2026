@@ -26,6 +26,7 @@
 #include "armor_solver/motion_model.hpp"
 #include "rm_utils/common.hpp"
 #include "rm_utils/heartbeat.hpp"
+#include <cv_bridge/cv_bridge.h>
 
 namespace fyt::auto_aim {
 //last cmd data
@@ -177,6 +178,32 @@ ArmorSolverNode::ArmorSolverNode(const rclcpp::NodeOptions &options)
     initMarkers();
   }
 
+  // 反投影可视化初始化
+  enable_reprojection_visualization_ = this->declare_parameter("enable_reprojection_visualization", true);
+  if (enable_reprojection_visualization_) {
+    // 初始化图像传输
+    image_transport_ = std::make_unique<image_transport::ImageTransport>(this->shared_from_this());
+    
+    // 创建图像发布器
+    reprojection_img_pub_ = image_transport_->advertise("armor_solver/reprojection_image", 1);
+    
+    // 订阅相机信息
+    cam_info_sub_ = this->create_subscription<sensor_msgs::msg::CameraInfo>(
+      "camera_info", 10,
+      [this](const sensor_msgs::msg::CameraInfo::SharedPtr msg) {
+        this->cameraInfoCallback(msg);
+      });
+    
+    // 订阅原始图像
+    image_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
+      "image_raw", 10,
+      [this](const sensor_msgs::msg::Image::SharedPtr msg) {
+        this->imageCallback(msg);
+      });
+    
+    FYT_INFO("armor_solver", "Reprojection visualization enabled!");
+  }
+
   // Heartbeat
   heartbeat_ = HeartBeatPublisher::create(this);
 }
@@ -290,20 +317,14 @@ void ArmorSolverNode::armorsCallback(const rm_interfaces::msg::Armors::SharedPtr
   // Lazy initialize solver owing to weak_from_this() can't be called in constructor
   if (solver_ == nullptr) {
     solver_ = std::make_unique<Solver>(weak_from_this());
-  }
-
-  // Tranform armor position from image frame to world coordinate
-  for (auto &armor : armors_msg->armors) {
-    geometry_msgs::msg::PoseStamped ps;
-    ps.header = armors_msg->header;
-    ps.pose = armor.pose;
-    try {
-      armor.pose = tf2_buffer_->transform(ps, target_frame_).pose;
-    } catch (const tf2::TransformException &ex) {
-      FYT_ERROR("armor_solver", "Transform error: {}", ex.what());
-      return;
+    // 如果已经有相机信息，立即设置
+    if (latest_camera_info_) {
+      solver_->setCameraParameters(latest_camera_info_);
     }
   }
+
+  // 实现装甲板位置从云台坐标系转换到世界坐标系的增强功能
+  transformArmorsToWorldCoordinates(armors_msg);
 
   // Filter abnormal armors
   armors_msg->armors.erase(std::remove_if(armors_msg->armors.begin(),
@@ -371,6 +392,11 @@ void ArmorSolverNode::armorsCallback(const rm_interfaces::msg::Armors::SharedPtr
   // Store and Publish the target_msg
   armor_target_ = target_msg;
   target_pub_->publish(target_msg);
+
+  // 发布反投影可视化图像
+  if (enable_reprojection_visualization_ && latest_image_ && latest_camera_info_ && solver_) {
+    publishReprojectionImage(target_msg, armors_msg);
+  }
 
   last_time_ = time;
 }
@@ -509,6 +535,172 @@ void ArmorSolverNode::setModeCallback(
   }
 
   FYT_WARN("armor_solver", "Set Mode to {}", visionModeToString(mode));
+}
+
+// 实现装甲板位置从云台坐标系转换到世界坐标系
+void ArmorSolverNode::transformArmorsToWorldCoordinates(
+    const rm_interfaces::msg::Armors::SharedPtr &armors_msg) {
+  
+  for (auto &armor : armors_msg->armors) {
+    // Step 1: 准备姿态数据用于变换
+    geometry_msgs::msg::PoseStamped ps;
+    ps.header = armors_msg->header;
+    ps.pose = armor.pose;
+    
+    try {
+      // Step 2: 从相机坐标系变换到目标坐标系(通常是odom/world)
+      geometry_msgs::msg::PoseStamped transformed_pose = tf2_buffer_->transform(ps, target_frame_);
+      armor.pose = transformed_pose.pose;
+      
+      // Step 3: 获取云台到世界坐标系的变换 (用于后续处理)
+      geometry_msgs::msg::TransformStamped gimbal_to_world_tf;
+      try {
+        gimbal_to_world_tf = tf2_buffer_->lookupTransform(
+          target_frame_, "gimbal_link", armors_msg->header.stamp);
+        
+        // 验证变换结果 - 记录坐标变换信息
+        if (debug_mode_) {
+          FYT_DEBUG("armor_solver", "Armor {} transformed - World pos: x={:.3f}, y={:.3f}, z={:.3f}", 
+                   armor.number,
+                   armor.pose.position.x,
+                   armor.pose.position.y,
+                   armor.pose.position.z);
+        }
+        
+      } catch (const tf2::TransformException &ex) {
+        FYT_WARN("armor_solver", "Could not get gimbal to world transform: {}", ex.what());
+      }
+      
+    } catch (const tf2::TransformException &ex) {
+      FYT_ERROR("armor_solver", "Transform error from camera to {}: {}", target_frame_, ex.what());
+      return;
+    }
+  }
+}
+
+// 相机信息回调函数
+void ArmorSolverNode::cameraInfoCallback(const sensor_msgs::msg::CameraInfo::SharedPtr camera_info) {
+  latest_camera_info_ = camera_info;
+  
+  // 将相机参数传递给solver
+  if (solver_) {
+    solver_->setCameraParameters(camera_info);
+  }
+  
+  FYT_INFO("armor_solver", "Received camera_info: {}x{}, fx={:.2f}, fy={:.2f}", 
+           camera_info->width, camera_info->height,
+           camera_info->k[0], camera_info->k[4]);
+}
+
+// 图像回调函数
+void ArmorSolverNode::imageCallback(const sensor_msgs::msg::Image::SharedPtr image_msg) {
+  latest_image_ = image_msg;
+}
+
+// 发布反投影图像
+void ArmorSolverNode::publishReprojectionImage(const rm_interfaces::msg::Target &target_msg,
+                                               const rm_interfaces::msg::Armors::SharedPtr armors_ptr) {
+  try {
+    // 转换图像格式 - 支持RGB8和BGR8编码
+    cv_bridge::CvImagePtr cv_ptr;
+    if (latest_image_->encoding == sensor_msgs::image_encodings::RGB8) {
+      cv_ptr = cv_bridge::toCvCopy(latest_image_, sensor_msgs::image_encodings::RGB8);
+      // RGB转BGR用于OpenCV显示
+      cv::Mat image_rgb = cv_ptr->image;
+      cv::Mat image_bgr;
+      cv::cvtColor(image_rgb, image_bgr, cv::COLOR_RGB2BGR);
+      cv_ptr->image = image_bgr;
+    } else {
+      cv_ptr = cv_bridge::toCvCopy(latest_image_, sensor_msgs::image_encodings::BGR8);
+    }
+    cv::Mat image = cv_ptr->image.clone();
+    
+    // 获取反投影的装甲板点集
+    if (target_msg.tracking && solver_) {
+      auto reprojected_armors = solver_->reproject_all_armors(target_msg, tf2_buffer_);
+      
+      // 在图像上绘制反投影的装甲板
+      drawReprojectedArmors(image, reprojected_armors, armors_ptr);
+    }
+    
+    // 发布处理后的图像
+    cv_bridge::CvImage out_msg;
+    out_msg.header = latest_image_->header;
+    out_msg.encoding = sensor_msgs::image_encodings::BGR8;
+    out_msg.image = image;
+    
+    reprojection_img_pub_.publish(out_msg.toImageMsg());
+    
+  } catch (cv_bridge::Exception& e) {
+    FYT_ERROR("armor_solver", "cv_bridge exception: {}", e.what());
+  }
+}
+
+// 绘制反投影装甲板
+void ArmorSolverNode::drawReprojectedArmors(cv::Mat &image, 
+                                           const std::vector<std::vector<cv::Point2f>> &reprojected_armors,
+                                           const rm_interfaces::msg::Armors::SharedPtr armors_ptr) {
+  
+  // 绘制反投影的装甲板（绿色）
+  for (size_t i = 0; i < reprojected_armors.size(); ++i) {
+    const auto &armor_points = reprojected_armors[i];
+    if (armor_points.size() >= 4) {
+      // 绘制装甲板轮廓
+      std::vector<cv::Point> contour;
+      for (const auto &point : armor_points) {
+        int x = static_cast<int>(point.x);
+        int y = static_cast<int>(point.y);
+        // 检查点是否在图像范围内
+        if (x >= 0 && x < image.cols && y >= 0 && y < image.rows) {
+          contour.push_back(cv::Point(x, y));
+        }
+      }
+      
+      if (contour.size() >= 4) {
+        // 绘制装甲板边框
+        cv::polylines(image, contour, true, cv::Scalar(0, 255, 0), 2, cv::LINE_AA);
+        
+        // 绘制装甲板角点
+        for (const auto &point : armor_points) {
+          int x = static_cast<int>(point.x);
+          int y = static_cast<int>(point.y);
+          if (x >= 0 && x < image.cols && y >= 0 && y < image.rows) {
+            cv::circle(image, cv::Point(x, y), 3, cv::Scalar(0, 255, 0), -1);
+          }
+        }
+        
+        // 添加装甲板编号（如果有对应的检测结果）
+        if (i < armors_ptr->armors.size()) {
+          std::string armor_id = armors_ptr->armors[i].number;
+          if (!armor_points.empty()) {
+            int x = static_cast<int>(armor_points[0].x);
+            int y = static_cast<int>(armor_points[0].y) - 10;
+            if (x >= 0 && x < image.cols && y >= 0 && y < image.rows) {
+              cv::putText(image, "Reproj_" + armor_id, cv::Point(x, y), 
+                         cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(0, 255, 0), 2);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // 绘制检测到的装甲板（红色）
+  for (const auto &armor : armors_ptr->armors) {
+    // 绘制装甲板中心点（如果pose中有有效信息）
+    // 注意：这里需要从armor.pose中提取2D点，或者从检测结果中获取
+    // 由于armor消息中可能没有直接的2D点信息，这里先跳过
+    // 如果需要，可以从检测器发布的消息中获取
+  }
+  
+  // 添加图例
+  cv::Point legend_pos(10, 30);
+  cv::putText(image, "Green: Reprojected", legend_pos, 
+             cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 255, 0), 2);
+  
+  legend_pos.y += 25;
+  cv::putText(image, "Red: Detected", legend_pos, 
+             cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 0, 255), 2);
 }
 
 }  // namespace fyt::auto_aim

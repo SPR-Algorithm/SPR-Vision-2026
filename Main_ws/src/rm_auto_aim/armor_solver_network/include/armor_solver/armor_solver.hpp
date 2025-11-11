@@ -112,6 +112,19 @@ private:
   double angular_velocity_factor_;
   double velocity_factor_; // 用于修正目标位置预测的速度系数
   std::weak_ptr<rclcpp::Node> node_;
+
+    // 变换所需矩阵
+    Eigen::Matrix3d R_camera2gimbal_;
+    Eigen::Matrix3d R_gimbal2world_;
+    Eigen::Vector3d t_camera2gimbal_;
+    
+    // 相机参数 (用于反投影)
+    cv::Mat camera_matrix_;
+    cv::Mat distort_coeffs_;
+    
+    // 装甲板3D模型点
+    static const std::vector<cv::Point3f> BIG_ARMOR_POINTS;
+    static const std::vector<cv::Point3f> SMALL_ARMOR_POINTS;
 };
 }  // namespace fyt::auto_aim
 #endif  // ARMOR_SOLVER_SOLVER_HPP_
